@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>location</title>
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<style type="text/css">
+ul.nav a:hover {
+	color: #fff;
+	background: #0088cc;
+	border: 1px solid #0088cc;
+}
+.nav-justified>li {
+	width: 100%;
+	font-size: 16px;
+	display: table;
+	padding: 10px 12px;
+	color: #FFF;
+	text-align: left;
+}
+.tooper {
+	border-radius: 4px;
+	border: 1px solid #ddd;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.067);
+	background-color: rgb(17, 68, 85);
+}
+</style>
+<script>
+	function addAddress() {
+		document.getElementById("targetSrc").src = "addAddress.html";
+	}
+	function updateAddress() {
+		document.getElementById("targetSrc").src = "updateAddress.html";
+	}
+	function deleteAddress() {
+		document.getElementById("targetSrc").src = "deleteAddress.html";
+	}
+	function addBranch() {
+		document.getElementById("targetSrc").src = "addBranch.html";
+	}
+	function updateBranch() {
+		document.getElementById("targetSrc").src = "updateBranch.html";
+	}
+	function deleteBranch() {
+		document.getElementById("targetSrc").src = "deleteBranch.html";
+	}
+	function doLogout() {
+		window.location = "login.html";
+	}
+</script>
+</head>
+<body style="background-color: rgb(228, 229, 231); font-size: 19px; color: #123">
+<div class="container" >
+    <span style="float:left; margin: 32px;"><img src="images/logo.png" /></span>
+    <div class="btn-primary" style="padding: 2px 0px 10px; border-radius: 30px; text-align: center; margin: 24px 106px 40px 164px; color: #FFF;">
+        <h2>CMC Store Web Portal</h2>
+    </div>
+    <span style="float:right; margin-top: -100px;"><button type="button" class="btn btn-primary navbar-btn" onclick="doLogout()">Logout</button></span>
+    
+	<div style="width:16%; float: left;">
+	    <ul class="nav nav-pills nav-justified" >
+	  		<li>
+				<div class="btn-group" style="width: 100%">
+	  				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="width: 100%; text-align: right;">
+	   				Location &nbsp;<span class="caret"></span></button>
+				  	<ul class="dropdown-menu" role="menu">
+				    	<li><a href="javascript:addAddress()">Add</a></li>
+				    	<li><a href="#">Update</a></li>
+				    	<li><a href="#">Delete</a></li>
+				    	<li class="divider"></li>
+				    	<li><a href="#">Search</a></li>
+				  	</ul>
+				</div>
+			</li>
+	  		<li>
+				<div class="btn-group" style="width: 100%">
+	  				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="width: 100%; text-align: right;">
+	   				Branch &nbsp;<span class="caret"></span></button>
+				  	<ul class="dropdown-menu" role="menu">
+				    	<li><a href="#">Add</a></li>
+				    	<li><a href="#">Update</a></li>
+				    	<li><a href="#">Delete</a></li>
+				    	<li class="divider"></li>
+				    	<li><a href="#">Search</a></li>
+				  	</ul>
+				</div>
+			</li>
+	  		<li>
+				<div class="btn-group" style="width: 100%">
+	  				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="width: 100%; text-align: right;">
+	   				Message &nbsp;<span class="caret"></span></button>
+				  	<ul class="dropdown-menu" role="menu">
+				    	<li><a href="#">Add</a></li>
+				    	<li><a href="#">Update</a></li>
+				    	<li><a href="#">Delete</a></li>
+				    	<li class="divider"></li>
+				    	<li><a href="#">Search</a></li>
+				  	</ul>
+				</div>
+			</li>
+	  		<li>
+				<div class="btn-group" style="width: 100%">
+	  				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="width: 100%; text-align: right;">
+	   				Deals &nbsp;<span class="caret"></span></button>
+				  	<ul class="dropdown-menu" role="menu">
+				    	<li><a href="#">Add</a></li>
+				    	<li><a href="#">Update</a></li>
+				    	<li><a href="#">Delete</a></li>
+				    	<li class="divider"></li>
+				    	<li><a href="#">Search</a></li>
+				  	</ul>
+				</div>
+			</li>
+	  		<li>
+				<div class="btn-group" style="width: 100%">
+	  				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="width: 100%; text-align: right;">
+	   				Inventory &nbsp;<span class="caret"></span></button>
+				  	<ul class="dropdown-menu" role="menu">
+				    	<li><a href="#">Add</a></li>
+				    	<li><a href="#">Update</a></li>
+				    	<li><a href="#">Delete</a></li>
+				    	<li class="divider"></li>
+				    	<li><a href="#">Search</a></li>
+				  	</ul>
+				</div>
+			</li>
+	  		<li>
+				<div class="btn-group" style="width: 100%">
+	  				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="width: 100%; text-align: right;">
+	   				Configuration &nbsp;<span class="caret"></span></button>
+				  	<ul class="dropdown-menu" role="menu">
+				    	<li><a href="#">Add</a></li>
+				    	<li><a href="#">Update</a></li>
+				    	<li><a href="#">Delete</a></li>
+				    	<li class="divider"></li>
+				    	<li><a href="#">Search</a></li>
+				  	</ul>
+				</div>
+			</li>
+	 	</ul>
+ 	</div>
+ 
+    <div class="row" style="display:block" id="Store"  >
+        <div class="col-xs-9">        
+	        <iframe id="targetSrc" src="addStore.html" style="border: none; width: 96%; height: 450px" seamless></iframe>
+		</div>
+    </div>    
+    
+</div>
+</body>
+</html>                                		

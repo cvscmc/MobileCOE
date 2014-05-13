@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Show Branches</title>
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-addressId.min.css">
+<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+
+	function addBranch() {
+		window.location = "addBranch.html";
+	}
+
+	function change(current) {
+		var i = current.id.substring(10);
+		
+		if(document.getElementById('branchName'+i).readOnly == true ) {
+			document.getElementById('branchName'+i).readOnly = false;
+			document.getElementById('addressId'+i).disabled = false;
+			document.getElementById('storeId'+i).disabled = false;
+			
+			document.getElementById('branchName'+i).style.border = "2px inset";
+			document.getElementById('addressId'+i).style.border = "1px solid";
+			document.getElementById('storeId'+i).style.border = "1px solid";
+		} else {
+			document.getElementById('branchName'+i).readOnly = true;
+			document.getElementById('addressId'+i).disabled = true;
+			document.getElementById('storeId'+i).disabled = true;
+			
+			document.getElementById('branchName'+i).style.border = "none";
+			document.getElementById('addressId'+i).style.border = "none";
+			document.getElementById('storeId'+i).style.border = "none";
+			
+			var branchId = document.getElementById("branchId"+i).value;
+			var branchName = document.getElementById("branchName"+i).value;
+			var addressId = document.getElementById("addressId"+i).value;
+			var storeId = document.getElementById("storeId"+i).value;
+
+			document.getElementById("successStatus").style.display = "none";
+			document.getElementById("failureStatus").style.display = "none";
+			document.getElementById("defaultStatus").style.display = "none";
+			document.getElementById("deleteStatus").style.display = "none";
+
+			var xmlhttp;
+			if (window.XMLHttpRequest) {
+				xmlhttp = new XMLHttpRequest();
+			} else {
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+		
+			xmlhttp.onreadystatechange = function() {
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+					var showdata = xmlhttp.responseText;
+					var json = jQuery.parseJSON(showdata);
+					var status = json["STATUS"];
+					if(status){
+						document.getElementById("successStatus").style.display = "block";
+						document.getElementById("failureStatus").style.display = "none";
+						document.getElementById("defaultStatus").style.display = "none";
+						document.getElementById("deleteStatus").style.display = "none";
+					} else {
+						document.getElementById("successStatus").style.display = "none";
+						document.getElementById("failureStatus").style.display = "block";
+						document.getElementById("defaultStatus").style.display = "none";
+						document.getElementById("deleteStatus").style.display = "none";
+					}
+				} // end of if condition
+			}
+			var params = "branchId="+encodeURIComponent(branchId)+"&branchName="+encodeURIComponent(branchName)
+				+"&addressId="+encodeURIComponent(addressId)+"&storeId="+encodeURIComponent(storeId);
+
+			xmlhttp.open("POST", "http://localhost:8080/WebTMonService/store/BranchService/updateBranch", true); 
+			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xmlhttp.send(params); 	
+		}
+		
+		if(document.getElementById('SpanEditButton'+i).className  == "glyphicon glyphicon-pencil") {
+			document.getElementById('SpanEditButton'+i).className  = "glyphicon glyphicon-saved";
+			document.getElementById('SpanDeleteButton'+i).className  = "glyphicon glyphicon-remove";
+		} else {
+			document.getElementById('SpanEditButton'+i).className  = "glyphicon glyphicon-pencil";
+			document.getElementById('SpanDeleteButton'+i).className  = "glyphicon glyphicon-trash";
+		}
+	}
+
+	function deleteNode(current) {
+		var i = current.id.substring(12);
+		if(document.getElementById('branchName'+i).readOnly == true ) {
+			
+			var flag = confirm("do you want to Delete?");
+			if(flag == false) {
+				return;
+			}
+			var branchId = document.getElementById("branchId"+i).value;
+			document.getElementById("successStatus").style.display = "none";
+			document.getElementById("failureStatus").style.display = "none";
+			document.getElementById("defaultStatus").style.display = "none";
+			document.getElementById("deleteStatus").style.display = "none";
+
+			var xmlhttp;
+			if (window.XMLHttpRequest) {
+				xmlhttp = new XMLHttpRequest();
+			} else {
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+		
+			xmlhttp.onreadystatechange = function() {
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+					var showdata = xmlhttp.responseText;
+					var json = jQuery.parseJSON(showdata);
+					var status = json["STATUS"];
+					if(status){
+						document.getElementById("successStatus").style.display = "none";
+						document.getElementById("failureStatus").style.display = "none";
+						document.getElementById("defaultStatus").style.display = "none";
+						document.getElementById("deleteStatus").style.display = "block";
+					} else {
+						document.getElementById("successStatus").style.display = "none";
+						document.getElementById("failureStatus").style.display = "block";
+						document.getElementById("defaultStatus").style.display = "none";
+						document.getElementById("deleteStatus").style.display = "none";
+					}
+				} // end of if condition
+			}
+			var params = "branchId="+encodeURIComponent(branchId);
+			xmlhttp.open("POST", "http://localhost:8080/WebTMonService/store/BranchService/deleteBranch", true); 
+			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xmlhttp.send(params); 	
+
+			var deleteChild = document.getElementById('delete'+i);
+			var parentNode = document.getElementById('tablebody');
+			parentNode.removeChild(deleteChild);
+				
+		} else {
+			document.getElementById('branchName'+i).readOnly = true;
+			document.getElementById('addressId'+i).disabled = true;
+			document.getElementById('storeId'+i).disabled = true;
+			
+			document.getElementById('branchName'+i).style.border = "none";
+			document.getElementById('addressId'+i).style.border = "none";
+			document.getElementById('storeId'+i).style.border = "none";
+
+			if(document.getElementById('SpanEditButton'+i).className  == "glyphicon glyphicon-pencil") {
+				document.getElementById('SpanEditButton'+i).className  = "glyphicon glyphicon-saved";
+				document.getElementById('SpanDeleteButton'+i).className  = "glyphicon glyphicon-remove";
+			} else {
+				document.getElementById('SpanEditButton'+i).className  = "glyphicon glyphicon-pencil";
+				document.getElementById('SpanDeleteButton'+i).className  = "glyphicon glyphicon-trash";
+			}
+		}
+	}
+	
+	function getBranches(stores, addresses) {
+	
+		var xmlhttp;
+		if (window.XMLHttpRequest) {
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+				var showdata = xmlhttp.responseText;
+				if(showdata != null && showdata != "") {
+					
+					var jsonobj = jQuery.parseJSON(showdata);
+					var size = jsonobj.BranchDetails.length;
+					
+					var main = document.getElementById('tablebody');
+					for(i=0; i<size; i++) {
+						
+						var trNode = document.createElement("tr");
+						trNode.setAttribute('id', 'delete'+i);
+					
+						var tdNodeName = document.createElement("td");
+						tdNodeName.style.height = "41px"
+						var branchId = document.createElement("input");
+						branchId.setAttribute('type', 'hidden');
+						branchId.setAttribute('id', 'branchId'+i);
+						branchId.setAttribute('value', jsonobj.BranchDetails[i].branchId);
+						tdNodeName.appendChild(branchId);
+		
+						var tdBranchName = document.createElement("td");
+						var branchName = document.createElement("input");
+						branchName.setAttribute('type', 'text');
+						branchName.setAttribute('id', 'branchName'+i);
+						branchName.setAttribute('readOnly', 'readOnly');
+						branchName.setAttribute('value', jsonobj.BranchDetails[i].branchName);
+						branchName.style.border = "none";
+						branchName.style.width = "180px";
+						tdBranchName.appendChild(branchName);
+						
+						var storeIdValue = jsonobj.BranchDetails[i].storeId;
+						var tdStoreId = document.createElement("td");
+						var storeSelect = document.createElement("select");
+						storeSelect.setAttribute('id', 'storeId'+i);
+						storeSelect.setAttribute('disabled', 'true');
+						storeSelect.style.border = "none";
+						
+						if(stores != null && stores != "undefined") {
+							var storeSize = stores.StoreDetails.length;
+							for(k=0; k<storeSize; k++) {
+								var optionNodeName = document.createElement("option");
+								optionNodeName.text = stores.StoreDetails[k].storeName;
+								optionNodeName.value = stores.StoreDetails[k].storeId;
+								if(storeIdValue == stores.StoreDetails[k].storeId) {
+									optionNodeName.selected = true;
+								}
+								storeSelect.appendChild(optionNodeName);
+							}
+						}
+						tdStoreId.appendChild(storeSelect);
+	
+						var addressIdValue = jsonobj.BranchDetails[i].addressId;
+						var tdAddressId = document.createElement("td");
+						var addressSelect = document.createElement("select");
+						addressSelect.setAttribute('id', 'addressId'+i);
+						addressSelect.setAttribute('disabled', 'true');
+						addressSelect.style.border = "none";
+						
+						if(addresses != null && addresses != "undefined") {
+							var addressSize = addresses.AddressDetails.length;
+							for(k=0; k<addressSize; k++) {
+								var optionNodeName = document.createElement("option");
+								optionNodeName.text = addresses.AddressDetails[k].address1;
+								optionNodeName.value = addresses.AddressDetails[k].addressId;
+								if(addressIdValue == addresses.AddressDetails[k].addressId) {
+									optionNodeName.selected = true;
+								}
+								addressSelect.appendChild(optionNodeName);
+							}
+						}
+						tdAddressId.appendChild(addressSelect);
+	
+						var tdNodeEditButton = document.createElement("td");
+						var EditButton = document.createElement("button");
+						EditButton.setAttribute('type', 'button');
+						EditButton.setAttribute('id', 'EditButton'+i);
+						EditButton.setAttribute('class', 'btn btn-default btn-xs');
+						tdNodeEditButton.style.verticalAlign = "middle";					
+						EditButton.onclick = function() {change(this);};
+						
+						var SpanEditButton = document.createElement("span");
+						SpanEditButton.setAttribute('id', 'SpanEditButton'+i);
+						SpanEditButton.setAttribute('class', 'glyphicon glyphicon-pencil');
+						EditButton.appendChild(SpanEditButton);
+						tdNodeEditButton.appendChild(EditButton);
+						
+						var tdNodeDeleteButton = document.createElement("td");
+						var DeleteButton = document.createElement("button");
+						DeleteButton.setAttribute('type', 'button');
+						DeleteButton.setAttribute('id', 'DeleteButton'+i);
+						DeleteButton.setAttribute('class', 'btn btn-default btn-xs');
+						tdNodeDeleteButton.style.verticalAlign = "middle";
+						DeleteButton.onclick = function() {deleteNode(this);};
+						
+						var SpanDeleteButton = document.createElement("span");
+						SpanDeleteButton.setAttribute('id', 'SpanDeleteButton'+i);
+						SpanDeleteButton.setAttribute('class', 'glyphicon glyphicon-trash');
+						DeleteButton.appendChild(SpanDeleteButton);
+						tdNodeDeleteButton.appendChild(DeleteButton);
+						
+						trNode.appendChild(tdNodeName);
+						trNode.appendChild(tdBranchName);
+						trNode.appendChild(tdStoreId);
+						trNode.appendChild(tdAddressId);
+						trNode.appendChild(tdNodeEditButton);
+						trNode.appendChild(tdNodeDeleteButton);
+						
+						main.appendChild(trNode);				
+					}
+				}  
+			} // end of if condition
+		}
+		xmlhttp.open("GET", "http://localhost:8080/WebTMonService/store/BranchService/getBranches", true); 
+		xmlhttp.send(); 	
+	}
+
+	function getAddresses(stores) {
+		
+		var xmlhttp;
+		if (window.XMLHttpRequest) {
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+				var showdata = xmlhttp.responseText;
+				var addresses;
+				if(showdata != null && showdata != "") {
+					addresses = jQuery.parseJSON(showdata);
+				}
+				getBranches(stores, addresses);
+				
+			} // end of readyState if condition
+		}
+		xmlhttp.open("GET", "http://localhost:8080/WebTMonService/store/AddressService/getAddresses", true); 
+		xmlhttp.send();
+	}
+
+	function getStores() {
+		
+		var xmlhttp;
+		if (window.XMLHttpRequest) {
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+				var showdata = xmlhttp.responseText;
+				var stores;
+				if(showdata != null && showdata != "") {
+					stores = jQuery.parseJSON(showdata);
+				}
+				getAddresses(stores);
+				
+			} // end of if condition
+		}
+		xmlhttp.open("GET", "http://localhost:8080/WebTMonService/store/StoreService/getStores", true); 
+		xmlhttp.send();
+	}
+
+</script>
+
+</head>
+<body style="background-color: rgb(228, 229, 231); height: 100%;">
+	<div class="panel panel-default" >
+      	<div class="panel-heading" >
+      		<span class="glyphicon glyphicon-plus-sign" data-toggle="tooltip" data-placement="bottom" title="Add Branch" onclick="addBranch()" style="float: right; cursor: pointer;"></span><h3 class="panel-title">Available Branches</h3>
+      	</div>
+      	<div class="panel-body" >
+	      	<div style="padding-top: 24px; padding-bottom: 40px;">
+	      		<table class="table" >
+	        		<thead>
+	          			<tr>
+				            <th>#</th>
+				            <th>Branch Name</th>
+				            <th>Store Name</th>
+				            <th>Address</th>
+				            <th></th>
+				            <th></th>
+	          			</tr>
+	        		</thead>
+	        		<tbody id="tablebody" style="font-size: 12px;"></tbody>
+	      		</table>
+	    	</div>
+			<div id="defaultStatus" style="display: block; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+	     		<div id="defaultContent" style="margin-left: 15px; text-align: center;">&nbsp;</div>
+	   		</div>
+			<div id="successStatus" class="alert alert-success" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+	     		<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Well done!</strong> &nbsp;&nbsp; You have updated branch info successfully.</div>
+	   		</div>
+			<div id="deleteStatus" class="alert alert-success" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+	     		<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Well done!</strong> &nbsp;&nbsp; You have deleted branch info successfully.</div>
+	   		</div>
+			<div id="failureStatus" class="alert alert-danger" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+	     		<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Oh snap!</strong> &nbsp;&nbsp; Change a few things up and try submitting again.</div>
+	   		</div>
+	   	</div>
+    </div>
+    <script>getStores();</script>
+</body>
+</html>
+

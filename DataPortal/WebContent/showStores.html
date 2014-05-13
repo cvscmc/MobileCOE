@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Show Stores</title>
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-storeType.min.css">
+<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+
+	function addStore() {
+		window.location = "addStore.html";
+	}
+
+	function change(current) {
+		var i = current.id.substring(10);
+		
+		if(document.getElementById('storeName'+i).readOnly == true ) {
+			document.getElementById('storeName'+i).readOnly = false;
+			document.getElementById('storeType'+i).readOnly = false;
+			document.getElementById('storeManager'+i).readOnly = false;
+			document.getElementById('appId'+i).disabled = false;
+			
+			document.getElementById('storeName'+i).style.border = "2px inset";
+			document.getElementById('storeType'+i).style.border = "2px inset";
+			document.getElementById('storeManager'+i).style.border = "2px inset";
+			document.getElementById('appId'+i).style.border = "1px solid";
+		} else {
+			document.getElementById('storeName'+i).readOnly = true;
+			document.getElementById('storeType'+i).readOnly = true;
+			document.getElementById('storeManager'+i).readOnly = true;
+			document.getElementById('appId'+i).disabled = true;
+			
+			document.getElementById('storeName'+i).style.border = "none";
+			document.getElementById('storeType'+i).style.border = "none";
+			document.getElementById('storeManager'+i).style.border = "none";
+			document.getElementById('appId'+i).style.border = "none";
+			
+			var storeId = document.getElementById("storeId"+i).value;
+			var storeName = document.getElementById("storeName"+i).value;
+			var storeType = document.getElementById("storeType"+i).value;
+			var storeManager = document.getElementById("storeManager"+i).value;
+			var appId = document.getElementById("appId"+i).value;
+
+			document.getElementById("successStatus").style.display = "none";
+			document.getElementById("failureStatus").style.display = "none";
+			document.getElementById("defaultStatus").style.display = "none";
+			document.getElementById("deleteStatus").style.display = "none";
+
+			var xmlhttp;
+			if (window.XMLHttpRequest) {
+				xmlhttp = new XMLHttpRequest();
+			} else {
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+		
+			xmlhttp.onreadystatechange = function() {
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+					var showdata = xmlhttp.responseText;
+					var json = jQuery.parseJSON(showdata);
+					var status = json["STATUS"];
+					if(status){
+						document.getElementById("successStatus").style.display = "block";
+						document.getElementById("failureStatus").style.display = "none";
+						document.getElementById("defaultStatus").style.display = "none";
+						document.getElementById("deleteStatus").style.display = "none";
+					} else {
+						document.getElementById("successStatus").style.display = "none";
+						document.getElementById("failureStatus").style.display = "block";
+						document.getElementById("defaultStatus").style.display = "none";
+						document.getElementById("deleteStatus").style.display = "none";
+					}
+				} // end of if condition
+			}
+			var params = "storeId="+encodeURIComponent(storeId)+"&storeName="+encodeURIComponent(storeName)
+				+"&storeType="+encodeURIComponent(storeType)+"&storeManager="+encodeURIComponent(storeManager)
+				+"&appId="+encodeURIComponent(appId);
+
+			xmlhttp.open("POST", "http://localhost:8080/WebTMonService/store/StoreService/updateStore", true); 
+			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xmlhttp.send(params); 	
+		}
+		
+		if(document.getElementById('SpanEditButton'+i).className  == "glyphicon glyphicon-pencil") {
+			document.getElementById('SpanEditButton'+i).className  = "glyphicon glyphicon-saved";
+			document.getElementById('SpanDeleteButton'+i).className  = "glyphicon glyphicon-remove";
+		} else {
+			document.getElementById('SpanEditButton'+i).className  = "glyphicon glyphicon-pencil";
+			document.getElementById('SpanDeleteButton'+i).className  = "glyphicon glyphicon-trash";
+		}
+	}
+
+	function deleteNode(current) {
+		var i = current.id.substring(12);
+		if(document.getElementById('storeName'+i).readOnly == true ) {
+			
+			var flag = confirm("do you want to Delete?");
+			if(flag == false) {
+				return;
+			}
+			var storeId = document.getElementById("storeId"+i).value;
+			document.getElementById("successStatus").style.display = "none";
+			document.getElementById("failureStatus").style.display = "none";
+			document.getElementById("defaultStatus").style.display = "none";
+			document.getElementById("deleteStatus").style.display = "none";
+
+			var xmlhttp;
+			if (window.XMLHttpRequest) {
+				xmlhttp = new XMLHttpRequest();
+			} else {
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+		
+			xmlhttp.onreadystatechange = function() {
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+					var showdata = xmlhttp.responseText;
+					var json = jQuery.parseJSON(showdata);
+					var status = json["STATUS"];
+					if(status){
+						document.getElementById("successStatus").style.display = "none";
+						document.getElementById("failureStatus").style.display = "none";
+						document.getElementById("defaultStatus").style.display = "none";
+						document.getElementById("deleteStatus").style.display = "block";
+					} else {
+						document.getElementById("successStatus").style.display = "none";
+						document.getElementById("failureStatus").style.display = "block";
+						document.getElementById("defaultStatus").style.display = "none";
+						document.getElementById("deleteStatus").style.display = "none";
+					}
+				} // end of if condition
+			}
+			var params = "storeId="+encodeURIComponent(storeId);
+			xmlhttp.open("POST", "http://localhost:8080/WebTMonService/store/StoreService/deleteStore", true); 
+			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xmlhttp.send(params); 	
+
+			var deleteChild = document.getElementById('delete'+i);
+			var parentNode = document.getElementById('tablebody');
+			parentNode.removeChild(deleteChild);
+				
+		} else {
+			document.getElementById('storeName'+i).readOnly = true;
+			document.getElementById('storeType'+i).readOnly = true;
+			document.getElementById('storeManager'+i).readOnly = true;
+			document.getElementById('appId'+i).disabled = true;
+			
+			document.getElementById('storeName'+i).style.border = "none";
+			document.getElementById('storeType'+i).style.border = "none";
+			document.getElementById('storeManager'+i).style.border = "none";
+			document.getElementById('appId'+i).style.border = "none";
+
+			if(document.getElementById('SpanEditButton'+i).className  == "glyphicon glyphicon-pencil") {
+				document.getElementById('SpanEditButton'+i).className  = "glyphicon glyphicon-saved";
+				document.getElementById('SpanDeleteButton'+i).className  = "glyphicon glyphicon-remove";
+			} else {
+				document.getElementById('SpanEditButton'+i).className  = "glyphicon glyphicon-pencil";
+				document.getElementById('SpanDeleteButton'+i).className  = "glyphicon glyphicon-trash";
+			}
+		}
+	}
+	
+	function getStores(applications) {
+	
+		var xmlhttp;
+		if (window.XMLHttpRequest) {
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+				var showdata = xmlhttp.responseText;
+				if(showdata != null && showdata != "") {
+					
+					var jsonobj = jQuery.parseJSON(showdata);
+					var size=jsonobj.StoreDetails.length;
+					
+					var main = document.getElementById('tablebody');
+					for(i=0; i<size; i++) {
+						
+						var trNode = document.createElement("tr");
+						trNode.setAttribute('id', 'delete'+i);
+					
+						var tdNodeName = document.createElement("td");
+						tdNodeName.style.height = "41px"
+						var storeId = document.createElement("input");
+						storeId.setAttribute('type', 'hidden');
+						storeId.setAttribute('id', 'storeId'+i);
+						storeId.setAttribute('value', jsonobj.StoreDetails[i].storeId);
+						tdNodeName.appendChild(storeId);
+		
+						var tdStoreName = document.createElement("td");
+						var storeName = document.createElement("input");
+						storeName.setAttribute('type', 'text');
+						storeName.setAttribute('id', 'storeName'+i);
+						storeName.setAttribute('readOnly', 'readOnly');
+						storeName.setAttribute('value', jsonobj.StoreDetails[i].storeName);
+						storeName.style.border = "none";
+						storeName.style.width = "100px";
+						tdStoreName.appendChild(storeName);
+						
+						var tdStoreType = document.createElement("td");
+						var storeType = document.createElement("input");
+						storeType.setAttribute('type', 'text');
+						storeType.setAttribute('id', 'storeType'+i);
+						storeType.setAttribute('readOnly', 'readOnly');
+						storeType.setAttribute('value', jsonobj.StoreDetails[i].storeType);
+						storeType.style.border = "none";
+						storeType.style.width = "100px";
+						tdStoreType.appendChild(storeType);
+					
+						var tdStoreManager = document.createElement("td");
+						var storeManager = document.createElement("input");
+						storeManager.setAttribute('type', 'text');
+						storeManager.setAttribute('id', 'storeManager'+i);
+						storeManager.setAttribute('readOnly', 'readOnly');
+						storeManager.setAttribute('value', jsonobj.StoreDetails[i].storeManager);
+						storeManager.style.border = "none";
+						storeManager.style.width = "150px";
+						tdStoreManager.appendChild(storeManager);
+						
+						var appIdValue = jsonobj.StoreDetails[i].appId;
+						var tdAppId = document.createElement("td");
+						var appSelect = document.createElement("select");
+						appSelect.setAttribute('id', 'appId'+i);
+						appSelect.setAttribute('disabled', 'true');
+						appSelect.style.border = "none";
+						
+						if(applications != null && applications != "undefined") {
+							var appSize = applications.AppDetails.length;
+							for(k=0; k<appSize; k++) {
+								var optionNodeName = document.createElement("option");
+								optionNodeName.text = applications.AppDetails[k].appName;
+								optionNodeName.value = applications.AppDetails[k].appId;
+								if(appIdValue == applications.AppDetails[k].appId) {
+									optionNodeName.selected = true;
+								}
+								appSelect.appendChild(optionNodeName);
+							}
+						}
+						tdAppId.appendChild(appSelect);
+						
+						var tdNodeEditButton = document.createElement("td");
+						var EditButton = document.createElement("button");
+						EditButton.setAttribute('type', 'button');
+						EditButton.setAttribute('id', 'EditButton'+i);
+						EditButton.setAttribute('class', 'btn btn-default btn-xs');
+						tdNodeEditButton.style.verticalAlign = "middle";					
+						EditButton.onclick = function() {change(this);};
+						
+						var SpanEditButton = document.createElement("span");
+						SpanEditButton.setAttribute('id', 'SpanEditButton'+i);
+						SpanEditButton.setAttribute('class', 'glyphicon glyphicon-pencil');
+						EditButton.appendChild(SpanEditButton);
+						tdNodeEditButton.appendChild(EditButton);
+						
+						var tdNodeDeleteButton = document.createElement("td");
+						var DeleteButton = document.createElement("button");
+						DeleteButton.setAttribute('type', 'button');
+						DeleteButton.setAttribute('id', 'DeleteButton'+i);
+						DeleteButton.setAttribute('class', 'btn btn-default btn-xs');
+						tdNodeDeleteButton.style.verticalAlign = "middle";
+						DeleteButton.onclick = function() {deleteNode(this);};
+						
+						var SpanDeleteButton = document.createElement("span");
+						SpanDeleteButton.setAttribute('id', 'SpanDeleteButton'+i);
+						SpanDeleteButton.setAttribute('class', 'glyphicon glyphicon-trash');
+						DeleteButton.appendChild(SpanDeleteButton);
+						tdNodeDeleteButton.appendChild(DeleteButton);
+						
+						trNode.appendChild(tdNodeName);
+						trNode.appendChild(tdStoreName);
+						trNode.appendChild(tdStoreType);
+						trNode.appendChild(tdStoreManager);
+						trNode.appendChild(tdAppId);
+						trNode.appendChild(tdNodeEditButton);
+						trNode.appendChild(tdNodeDeleteButton);
+						
+						main.appendChild(trNode);				
+					}	
+				}  
+			} // end of if condition
+		}
+		xmlhttp.open("GET", "http://localhost:8080/WebTMonService/store/StoreService/getStores", true); 
+		xmlhttp.send(); 	
+	}
+
+	function getApplications() {
+		
+		var xmlhttp;
+		if (window.XMLHttpRequest) {
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+				var showdata = xmlhttp.responseText;
+				var applications;
+				if(showdata != null && showdata != "") {
+					applications = jQuery.parseJSON(showdata);
+				}
+				getStores(applications);				
+			} // end of readyState if condition
+		}
+		xmlhttp.open("GET", "http://localhost:8080/WebTMonService/store/StoreService/getApplications", true); 
+		xmlhttp.send();
+	}
+
+</script>
+
+</head>
+<body style="background-color: rgb(228, 229, 231); height: 100%;">
+	<div class="panel panel-default" >
+      	<div class="panel-heading" >
+      		<span class="glyphicon glyphicon-plus-sign" data-toggle="tooltip" data-placement="bottom" title="Add Store" onclick="addStore()" style="float: right; cursor: pointer;"></span><h3 class="panel-title">Available Stores</h3>
+      	</div>
+      	<div class="panel-body" >
+	      	<div style="padding-top: 24px; padding-bottom: 40px;">
+	      		<table class="table" >
+	        		<thead>
+	          			<tr>
+				            <th>#</th>
+				            <th>Store Name</th>
+				            <th>Store Type</th>
+				            <th>Store Manager</th>
+				            <th>Application Name</th>
+				            <th></th>
+				            <th></th>
+	          			</tr>
+	        		</thead>
+	        		<tbody id="tablebody" style="font-size: 12px;"></tbody>
+	      		</table>
+	    	</div>
+			<div id="defaultStatus" style="display: block; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+	     		<div id="defaultContent" style="margin-left: 15px; text-align: center;">&nbsp;</div>
+	   		</div>
+			<div id="successStatus" class="alert alert-success" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+	     		<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Well done!</strong> &nbsp;&nbsp; You have updated store info successfully.</div>
+	   		</div>
+			<div id="deleteStatus" class="alert alert-success" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+	     		<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Well done!</strong> &nbsp;&nbsp; You have deleted store info successfully.</div>
+	   		</div>
+			<div id="failureStatus" class="alert alert-danger" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+	     		<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Oh snap!</strong> &nbsp;&nbsp; Change a few things up and try submitting again.</div>
+	   		</div>
+	   	</div>
+    </div>
+    <script>getApplications();</script>
+</body>
+</html>
+

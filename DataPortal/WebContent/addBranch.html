@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Branch</title>
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<script>
+	function doSubmit(){
+		
+		var branchName = document.getElementById("branchName").value;
+		var storeId = document.getElementById("storeId").value;
+		var addressId = document.getElementById("addressId").value;
+	
+		document.getElementById("successStatus").style.display = "none";
+		document.getElementById("failureStatus").style.display = "none";
+		document.getElementById("defaultStatus").style.display = "none";
+	
+		if(branchName != "" && branchName != null) {
+				var xmlhttp;
+				if (window.XMLHttpRequest) {
+					xmlhttp = new XMLHttpRequest();
+				} else {
+					xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+				}
+				xmlhttp.onreadystatechange = function() {
+					if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+						var showdata = xmlhttp.responseText;
+						var json = jQuery.parseJSON(showdata);
+						var status = json["STATUS"];
+						 if(status){
+							 document.getElementById("successStatus").style.display = "block";
+							 document.getElementById("failureStatus").style.display = "none";
+							 document.getElementById("defaultStatus").style.display = "none";
+							 document.getElementById("branchName").value = "";
+						 } else {
+							 document.getElementById("successStatus").style.display = "none";
+							 document.getElementById("failureStatus").style.display = "block";
+							 document.getElementById("defaultStatus").style.display = "none";
+						 }
+					} // end of if condition
+				}
+				var params = "branchName="+encodeURIComponent(branchName)+"&storeId="+encodeURIComponent(storeId)
+					+"&addressId="+encodeURIComponent(addressId);
+				xmlhttp.open("POST", "http://localhost:8080/WebTMonService/store/BranchService/addBranch", true); 
+				xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+				xmlhttp.send(params);
+		} else {
+			if( (branchName == null || branchName == "")) {
+				document.getElementById("defaultStatus").style.display = "block";
+				document.getElementById("defaultStatus").className = "alert alert-warning";
+				document.getElementById("defaultContent").innerHTML = "<span class='glyphicon glyphicon-hand-right' style='float: left;'></span><strong>Warning!</strong> &nbsp;&nbsp; Please enter branch name";	
+				document.getElementById("branchName").focus();	
+			}		
+		}	
+	}
+
+	function getStores() {
+		
+		var xmlhttp;
+		if (window.XMLHttpRequest) {
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+				var showdata = xmlhttp.responseText;
+				var stores = jQuery.parseJSON(showdata);
+				var size = stores.StoreDetails.length;
+				
+				var main = document.getElementById('storeId');
+				for(i=0; i<size; i++) {
+					var optionNodeName = document.createElement("option");
+					optionNodeName.text = stores.StoreDetails[i].storeName;
+					optionNodeName.value = stores.StoreDetails[i].storeId;
+					main.appendChild(optionNodeName);
+				}
+				
+			} // end of if condition
+		}
+		xmlhttp.open("GET", "http://localhost:8080/WebTMonService/store/StoreService/getStores", true); 
+		xmlhttp.send();
+	}
+	
+	function getAddresses() {
+		
+		var xmlhttp;
+		if (window.XMLHttpRequest) {
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+				var showdata = xmlhttp.responseText;
+				var addresses = jQuery.parseJSON(showdata);
+				var size = addresses.AddressDetails.length;
+				
+				var main = document.getElementById('addressId');
+				for(i=0; i<size; i++) {
+					var optionNodeName = document.createElement("option");
+					optionNodeName.text = addresses.AddressDetails[i].address1;
+					optionNodeName.value = addresses.AddressDetails[i].addressId;
+					main.appendChild(optionNodeName);
+				}
+				
+			} // end of if condition
+		}
+		xmlhttp.open("GET", "http://localhost:8080/WebTMonService/store/AddressService/getAddresses", true); 
+		xmlhttp.send();
+	}
+
+</script>
+</head>
+<body style="background-color: rgb(228, 229, 231); font-size: 19px; color: #123">
+	<div class="panel panel-default">
+  		<div class="panel-heading">
+    		<span class="glyphicon glyphicon-tree-deciduous" style="float: right;"></span><h3 class="panel-title">Adding Branch</h3>
+  		</div>
+  		<div class="panel-body" style="padding: 30px 40px;">
+			<div class="container" style="padding-bottom: 20px;">        
+		        <div id="AddStore" style="padding-top: 32px; padding-left: 75px">
+			        <div class="input-group" style="width: 40%;">
+			  			<input type="text" class="form-control" id="branchName" name="branchName" placeholder="Enter Branch Name" style="border-radius: 4px;">
+					</div><br>
+			        <div class="input-group" style="width: 40%;">
+			  			<select class="form-control" id="storeId" name="storeId" style="border-radius: 4px;"></select>
+					</div><br>
+			        <div class="input-group" style="width: 40%;">
+			  			<select class="form-control" id="addressId" name="addressId" style="border-radius: 4px;"></select>
+					</div><br>
+					<button type="button" class="btn btn-primary navbar-btn" id="Add" onclick="doSubmit()">Add</button>
+				</div>
+			</div>
+			<div id="defaultStatus" style="display: block; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+      			<div id="defaultContent" style="margin-left: 15px; text-align: center;">&nbsp;</div>
+    		</div>
+			<div id="successStatus" class="alert alert-success" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+      			<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Well done!</strong> &nbsp;&nbsp; You have added branch successfully.</div>
+    		</div>
+			<div id="failureStatus" class="alert alert-danger" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+      			<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Oh snap!</strong> &nbsp;&nbsp; Change a few things up and try submitting again.</div>
+    		</div>
+  		</div>
+  	</div>
+  	<script>getStores();getAddresses();</script>
+</body>
+</html>                                		

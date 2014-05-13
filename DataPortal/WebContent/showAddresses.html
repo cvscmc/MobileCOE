@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Show Addresses</title>
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+
+	function addAddress() {
+		window.location = "addAddress.html";
+	}
+
+	function change(current) {
+		var i = current.id.substring(10);
+		
+		if(document.getElementById('address1'+i).readOnly == true ) {
+			document.getElementById('address1'+i).readOnly = false;
+			document.getElementById('address2'+i).readOnly = false;
+			document.getElementById('area'+i).readOnly = false;
+			document.getElementById('city'+i).readOnly = false;
+			document.getElementById('state'+i).readOnly = false;
+			document.getElementById('landMark'+i).readOnly = false;
+			document.getElementById('pincode'+i).readOnly = false;
+			document.getElementById('phone'+i).readOnly = false;
+			document.getElementById('mobile1'+i).readOnly = false;
+			document.getElementById('mobile2'+i).readOnly = false;
+			document.getElementById('latitude'+i).readOnly = false;
+			document.getElementById('longitude'+i).readOnly = false;
+			
+			document.getElementById('address1'+i).style.border = "2px inset";
+			document.getElementById('address2'+i).style.border = "2px inset";
+			document.getElementById('area'+i).style.border = "2px inset";
+			document.getElementById('city'+i).style.border = "2px inset";
+			document.getElementById('state'+i).style.border = "2px inset";
+			document.getElementById('landMark'+i).style.border = "2px inset";
+			document.getElementById('pincode'+i).style.border = "2px inset";
+			document.getElementById('phone'+i).style.border = "2px inset";
+			document.getElementById('mobile1'+i).style.border = "2px inset";
+			document.getElementById('mobile2'+i).style.border = "2px inset";
+			document.getElementById('latitude'+i).style.border = "2px inset";
+			document.getElementById('longitude'+i).style.border = "2px inset";
+		} else {
+			document.getElementById('address1'+i).readOnly = true;
+			document.getElementById('address2'+i).readOnly = true;
+			document.getElementById('area'+i).readOnly = true;
+			document.getElementById('city'+i).readOnly = true;
+			document.getElementById('state'+i).readOnly = true;
+			document.getElementById('landMark'+i).readOnly = true;
+			document.getElementById('pincode'+i).readOnly = true;
+			document.getElementById('phone'+i).readOnly = true;
+			document.getElementById('mobile1'+i).readOnly = true;
+			document.getElementById('mobile2'+i).readOnly = true;
+			document.getElementById('latitude'+i).readOnly = true;
+			document.getElementById('longitude'+i).readOnly = true;
+			
+			document.getElementById('address1'+i).style.border = "none";
+			document.getElementById('address2'+i).style.border = "none";
+			document.getElementById('area'+i).style.border = "none";
+			document.getElementById('city'+i).style.border = "none";
+			document.getElementById('state'+i).style.border = "none";
+			document.getElementById('landMark'+i).style.border = "none";
+			document.getElementById('pincode'+i).style.border = "none";
+			document.getElementById('phone'+i).style.border = "none";
+			document.getElementById('mobile1'+i).style.border = "none";
+			document.getElementById('mobile2'+i).style.border = "none";
+			document.getElementById('latitude'+i).style.border = "none";
+			document.getElementById('longitude'+i).style.border = "none";
+			
+			var addressId = document.getElementById("addressId"+i).value;
+			var address1 = document.getElementById("address1"+i).value;
+			var address2 = document.getElementById("address2"+i).value;
+			var area = document.getElementById("area"+i).value;
+			var city = document.getElementById("city"+i).value;
+			var state = document.getElementById("state"+i).value;
+			var landMark = document.getElementById("landMark"+i).value;
+			var pincode = document.getElementById("pincode"+i).value;
+			var phone = document.getElementById("phone"+i).value;
+			var mobile1 = document.getElementById("mobile1"+i).value;
+			var mobile2 = document.getElementById("mobile2"+i).value;
+			var latitude = document.getElementById("latitude"+i).value;
+			var longitude = document.getElementById("longitude"+i).value;
+
+			document.getElementById("successStatus").style.display = "none";
+			document.getElementById("failureStatus").style.display = "none";
+			document.getElementById("defaultStatus").style.display = "none";
+			document.getElementById("deleteStatus").style.display = "none";
+
+			var xmlhttp;
+			if (window.XMLHttpRequest) {
+				xmlhttp = new XMLHttpRequest();
+			} else {
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+		
+			xmlhttp.onreadystatechange = function() {
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+					var showdata = xmlhttp.responseText;
+					var json = jQuery.parseJSON(showdata);
+					var status = json["STATUS"];
+					if(status){
+						document.getElementById("successStatus").style.display = "block";
+						document.getElementById("failureStatus").style.display = "none";
+						document.getElementById("defaultStatus").style.display = "none";
+						document.getElementById("deleteStatus").style.display = "none";
+					} else {
+						document.getElementById("successStatus").style.display = "none";
+						document.getElementById("failureStatus").style.display = "block";
+						document.getElementById("defaultStatus").style.display = "none";
+						document.getElementById("deleteStatus").style.display = "none";
+					}
+				} // end of if condition
+			}
+			var params = "addressId="+encodeURIComponent(addressId)+"&address1="+encodeURIComponent(address1)
+				+"&address2="+encodeURIComponent(address2)+"&area="+encodeURIComponent(area)+"&city="+encodeURIComponent(city)
+				+"&state="+encodeURIComponent(state)+"&landMark="+encodeURIComponent(landMark)
+				+"&pincode="+encodeURIComponent(pincode)+"&phone="+encodeURIComponent(phone)
+				+"&mobile1="+encodeURIComponent(mobile1)+"&mobile2="+encodeURIComponent(mobile2)
+				+"&latitude="+encodeURIComponent(latitude)+"&longitude="+encodeURIComponent(longitude);
+
+			xmlhttp.open("POST", "http://localhost:8080/WebTMonService/store/AddressService/updateAddress", true); 
+			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xmlhttp.send(params); 	
+		}
+		
+		if(document.getElementById('SpanEditButton'+i).className  == "glyphicon glyphicon-pencil") {
+			document.getElementById('SpanEditButton'+i).className  = "glyphicon glyphicon-saved";
+			document.getElementById('SpanDeleteButton'+i).className  = "glyphicon glyphicon-remove";
+		} else {
+			document.getElementById('SpanEditButton'+i).className  = "glyphicon glyphicon-pencil";
+			document.getElementById('SpanDeleteButton'+i).className  = "glyphicon glyphicon-trash";
+		}
+	}
+
+	function deleteNode(current) {
+		var i = current.id.substring(12);
+		if(document.getElementById('address1'+i).readOnly == true ) {
+			
+			var flag = confirm("do you want to Delete?");
+			if(flag == false) {
+				return;
+			}
+			var addressId = document.getElementById("addressId"+i).value;
+			document.getElementById("successStatus").style.display = "none";
+			document.getElementById("failureStatus").style.display = "none";
+			document.getElementById("defaultStatus").style.display = "none";
+			document.getElementById("deleteStatus").style.display = "none";
+
+			var xmlhttp;
+			if (window.XMLHttpRequest) {
+				xmlhttp = new XMLHttpRequest();
+			} else {
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+		
+			xmlhttp.onreadystatechange = function() {
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+					var showdata = xmlhttp.responseText;
+					var json = jQuery.parseJSON(showdata);
+					var status = json["STATUS"];
+					if(status){
+						document.getElementById("successStatus").style.display = "none";
+						document.getElementById("failureStatus").style.display = "none";
+						document.getElementById("defaultStatus").style.display = "none";
+						document.getElementById("deleteStatus").style.display = "block";
+					} else {
+						document.getElementById("successStatus").style.display = "none";
+						document.getElementById("failureStatus").style.display = "block";
+						document.getElementById("defaultStatus").style.display = "none";
+						document.getElementById("deleteStatus").style.display = "none";
+					}
+				} // end of if condition
+			}
+			var params = "addressId="+encodeURIComponent(addressId);
+			xmlhttp.open("POST", "http://localhost:8080/WebTMonService/store/AddressService/deleteAddress", true); 
+			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xmlhttp.send(params); 	
+
+			var deleteChild = document.getElementById('delete'+i);
+			var parentNode = document.getElementById('tablebody');
+			parentNode.removeChild(deleteChild);
+				
+		} else {
+			document.getElementById('address1'+i).readOnly = true;
+			document.getElementById('address2'+i).readOnly = true;
+			document.getElementById('area'+i).readOnly = true;
+			document.getElementById('city'+i).readOnly = true;
+			document.getElementById('state'+i).readOnly = true;
+			document.getElementById('landMark'+i).readOnly = true;
+			document.getElementById('pincode'+i).readOnly = true;
+			document.getElementById('phone'+i).readOnly = true;
+			document.getElementById('mobile1'+i).readOnly = true;
+			document.getElementById('mobile2'+i).readOnly = true;
+			document.getElementById('latitude'+i).readOnly = true;
+			document.getElementById('longitude'+i).readOnly = true;
+			
+			document.getElementById('address1'+i).style.border = "none";
+			document.getElementById('address2'+i).style.border = "none";
+			document.getElementById('area'+i).style.border = "none";
+			document.getElementById('city'+i).style.border = "none";
+			document.getElementById('state'+i).style.border = "none";
+			document.getElementById('landMark'+i).style.border = "none";
+			document.getElementById('pincode'+i).style.border = "none";
+			document.getElementById('phone'+i).style.border = "none";
+			document.getElementById('mobile1'+i).style.border = "none";
+			document.getElementById('mobile2'+i).style.border = "none";
+			document.getElementById('latitude'+i).style.border = "none";
+			document.getElementById('longitude'+i).style.border = "none";
+
+			if(document.getElementById('SpanEditButton'+i).className  == "glyphicon glyphicon-pencil") {
+				document.getElementById('SpanEditButton'+i).className  = "glyphicon glyphicon-saved";
+				document.getElementById('SpanDeleteButton'+i).className  = "glyphicon glyphicon-remove";
+			} else {
+				document.getElementById('SpanEditButton'+i).className  = "glyphicon glyphicon-pencil";
+				document.getElementById('SpanDeleteButton'+i).className  = "glyphicon glyphicon-trash";
+			}
+		}
+	}
+	
+	function getAddresses() {
+	
+		var xmlhttp;
+		if (window.XMLHttpRequest) {
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+				var showdata = xmlhttp.responseText;
+				var jsonobj = jQuery.parseJSON(showdata);
+				var size = jsonobj.AddressDetails.length;
+				
+				for(i=0; i<size; i++) {
+					
+					var main = document.getElementById('tablebody');
+					var trNode = document.createElement("tr");
+					trNode.setAttribute('id', 'delete'+i);
+				
+					var tdNodeName = document.createElement("td");
+					tdNodeName.style.height = "41px"
+					var appId = document.createElement("input");
+					appId.setAttribute('type', 'hidden');
+					appId.setAttribute('id', 'addressId'+i);
+					appId.setAttribute('value', jsonobj.AddressDetails[i].addressId);
+					tdNodeName.appendChild(appId);
+	
+					var tdAppName = document.createElement("td");
+					var address1 = document.createElement("input");
+					address1.setAttribute('type', 'text');
+					address1.setAttribute('id', 'address1'+i);
+					address1.setAttribute('readOnly', 'readOnly');
+					address1.setAttribute('value', jsonobj.AddressDetails[i].address1);
+					address1.style.border = "none";
+					address1.style.width = "100px";
+					tdAppName.appendChild(address1);
+					
+					var tdAppName2 = document.createElement("td");
+					var address2 = document.createElement("input");
+					address2.setAttribute('type', 'text');
+					address2.setAttribute('id', 'address2'+i);
+					address2.setAttribute('readOnly', 'readOnly');
+					address2.setAttribute('value', jsonobj.AddressDetails[i].address2);
+					address2.style.border = "none";
+					address2.style.width = "100px";
+					tdAppName2.appendChild(address2);
+
+					var tdArea = document.createElement("td");
+					var area = document.createElement("input");
+					area.setAttribute('type', 'text');
+					area.setAttribute('id', 'area'+i);
+					area.setAttribute('readOnly', 'readOnly');
+					area.setAttribute('value', jsonobj.AddressDetails[i].area);
+					area.style.border = "none";
+					area.style.width = "60px";
+					tdArea.appendChild(area);
+				
+					var tdCity = document.createElement("td");
+					var city = document.createElement("input");
+					city.setAttribute('type', 'text');
+					city.setAttribute('id', 'city'+i);
+					city.setAttribute('readOnly', 'readOnly');
+					city.setAttribute('value', jsonobj.AddressDetails[i].city);
+					city.style.border = "none";
+					city.style.width = "60px";
+					tdCity.appendChild(city);
+				
+					var tdState = document.createElement("td");
+					var state = document.createElement("input");
+					state.setAttribute('type', 'text');
+					state.setAttribute('id', 'state'+i);
+					state.setAttribute('readOnly', 'readOnly');
+					state.setAttribute('value', jsonobj.AddressDetails[i].state);
+					state.style.border = "none";
+					state.style.width = "60px";
+					tdState.appendChild(state);
+
+					var tdLandMark = document.createElement("td");
+					var landMark = document.createElement("input");
+					landMark.setAttribute('type', 'text');
+					landMark.setAttribute('id', 'landMark'+i);
+					landMark.setAttribute('readOnly', 'readOnly');
+					landMark.setAttribute('value', jsonobj.AddressDetails[i].landMark);
+					landMark.style.border = "none";
+					landMark.style.width = "60px";
+					tdLandMark.appendChild(landMark);
+
+					var tdPincode = document.createElement("td");
+					var pincode = document.createElement("input");
+					pincode.setAttribute('type', 'text');
+					pincode.setAttribute('id', 'pincode'+i);
+					pincode.setAttribute('readOnly', 'readOnly');
+					pincode.setAttribute('value', jsonobj.AddressDetails[i].pincode);
+					pincode.style.border = "none";
+					pincode.style.width = "60px";
+					tdPincode.appendChild(pincode);
+
+					var tdPhone = document.createElement("td");
+					var phone = document.createElement("input");
+					phone.setAttribute('type', 'text');
+					phone.setAttribute('id', 'phone'+i);
+					phone.setAttribute('readOnly', 'readOnly');
+					phone.setAttribute('value', jsonobj.AddressDetails[i].phone);
+					phone.style.border = "none";
+					phone.style.width = "60px";
+					tdPhone.appendChild(phone);
+
+					var tdMobile1 = document.createElement("td");
+					var mobile1 = document.createElement("input");
+					mobile1.setAttribute('type', 'text');
+					mobile1.setAttribute('id', 'mobile1'+i);
+					mobile1.setAttribute('readOnly', 'readOnly');
+					mobile1.setAttribute('value', jsonobj.AddressDetails[i].mobile1);
+					mobile1.style.border = "none";
+					mobile1.style.width = "60px";
+					tdMobile1.appendChild(mobile1);
+
+					var tdMobile2 = document.createElement("td");
+					var mobile2 = document.createElement("input");
+					mobile2.setAttribute('type', 'text');
+					mobile2.setAttribute('id', 'mobile2'+i);
+					mobile2.setAttribute('readOnly', 'readOnly');
+					mobile2.setAttribute('value', jsonobj.AddressDetails[i].mobile2);
+					mobile2.style.border = "none";
+					mobile2.style.width = "60px";
+					tdMobile2.appendChild(mobile2);
+
+					var tdLatitude = document.createElement("td");
+					var latitude = document.createElement("input");
+					latitude.setAttribute('type', 'text');
+					latitude.setAttribute('id', 'latitude'+i);
+					latitude.setAttribute('readOnly', 'readOnly');
+					latitude.setAttribute('value', jsonobj.AddressDetails[i].latitude);
+					latitude.style.border = "none";
+					latitude.style.width = "80px";
+					tdLatitude.appendChild(latitude);
+
+					var tdLongitude = document.createElement("td");
+					var longitude = document.createElement("input");
+					longitude.setAttribute('type', 'text');
+					longitude.setAttribute('id', 'longitude'+i);
+					longitude.setAttribute('readOnly', 'readOnly');
+					longitude.setAttribute('value', jsonobj.AddressDetails[i].longitude);
+					longitude.style.border = "none";
+					longitude.style.width = "80px";
+					tdLongitude.appendChild(longitude);
+
+					var tdNodeEditButton = document.createElement("td");
+					var EditButton = document.createElement("button");
+					EditButton.setAttribute('type', 'button');
+					EditButton.setAttribute('id', 'EditButton'+i);
+					EditButton.setAttribute('class', 'btn btn-default btn-xs');
+					tdNodeEditButton.style.verticalAlign = "middle";					
+					EditButton.onclick = function() {change(this);};
+					
+					var SpanEditButton = document.createElement("span");
+					SpanEditButton.setAttribute('id', 'SpanEditButton'+i);
+					SpanEditButton.setAttribute('class', 'glyphicon glyphicon-pencil');
+					EditButton.appendChild(SpanEditButton);
+					tdNodeEditButton.appendChild(EditButton);
+					
+					var tdNodeDeleteButton = document.createElement("td");
+					var DeleteButton = document.createElement("button");
+					DeleteButton.setAttribute('type', 'button');
+					DeleteButton.setAttribute('id', 'DeleteButton'+i);
+					DeleteButton.setAttribute('class', 'btn btn-default btn-xs');
+					tdNodeDeleteButton.style.verticalAlign = "middle";
+					DeleteButton.onclick = function() {deleteNode(this);};
+					
+					var SpanDeleteButton = document.createElement("span");
+					SpanDeleteButton.setAttribute('id', 'SpanDeleteButton'+i);
+					SpanDeleteButton.setAttribute('class', 'glyphicon glyphicon-trash');
+					DeleteButton.appendChild(SpanDeleteButton);
+					tdNodeDeleteButton.appendChild(DeleteButton);
+					
+					trNode.appendChild(tdNodeName);
+					trNode.appendChild(tdAppName);
+					trNode.appendChild(tdAppName2);
+					trNode.appendChild(tdArea);
+					trNode.appendChild(tdCity);
+					trNode.appendChild(tdState);
+					trNode.appendChild(tdLandMark);
+					trNode.appendChild(tdPincode);
+					trNode.appendChild(tdPhone);
+					trNode.appendChild(tdMobile1);
+					trNode.appendChild(tdMobile2);
+					trNode.appendChild(tdLatitude);
+					trNode.appendChild(tdLongitude);
+					trNode.appendChild(tdNodeEditButton);
+					trNode.appendChild(tdNodeDeleteButton);
+					
+					main.appendChild(trNode);				
+					
+				}  
+			} // end of if condition
+		}
+		xmlhttp.open("GET", "http://localhost:8080/WebTMonService/store/AddressService/getAddresses", true); 
+		xmlhttp.send();
+	}
+
+</script>
+
+</head>
+<body style="background-color: rgb(228, 229, 231); height: 100%;">
+	<div class="panel panel-default" >
+      	<div class="panel-heading" >
+      		<span class="glyphicon glyphicon-plus-sign" data-toggle="tooltip" data-placement="bottom" title="Add Location" onclick="addAddress()" style="float: right; cursor: pointer;"></span><h3 class="panel-title">Available Locations</h3>
+      	</div>
+      	<div class="panel-body" >
+	      	<div style="padding-top: 24px; padding-bottom: 40px;">
+	      		<table class="table" >
+	        		<thead>
+	          			<tr>
+				            <th>#</th>
+				            <th>Address 1</th>
+				            <th>Address 2</th>
+				            <th>Area</th>
+				            <th>City</th>
+				            <th>State</th>
+				            <th>Land Mark</th>
+				            <th>Pincode</th>
+				            <th>Phone No</th>
+				            <th>Mobile No1</th>
+				            <th>Mobile No2</th>
+				            <th>Latitude</th>
+				            <th>Longitude</th>
+				            <th></th>
+				            <th></th>
+	          			</tr>
+	        		</thead>
+	        		<tbody id="tablebody" style="font-size: 12px;"></tbody>
+	      		</table>
+	    	</div>
+			<div id="defaultStatus" style="display: block; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+	     		<div id="defaultContent" style="margin-left: 15px; text-align: center;">&nbsp;</div>
+	   		</div>
+			<div id="successStatus" class="alert alert-success" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+	     		<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Well done!</strong> &nbsp;&nbsp; You have updated location info successfully.</div>
+	   		</div>
+			<div id="deleteStatus" class="alert alert-success" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+	     		<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Well done!</strong> &nbsp;&nbsp; You have deleted location info successfully.</div>
+	   		</div>
+			<div id="failureStatus" class="alert alert-danger" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+	     		<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Oh snap!</strong> &nbsp;&nbsp; Change a few things up and try submitting again.</div>
+	   		</div>
+	   	</div>
+    </div>
+    <script>getAddresses();</script>
+</body>
+</html>
+

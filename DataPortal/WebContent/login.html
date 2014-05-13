@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Access-Control-Allow-Origin" content="*">
+<link rel="stylesheet" href="css/jquery.mobile-1.4.0.min.css">
+<script src="js/jquery-1.10.2.js"></script>
+<script src="js/jquery.mobile-1.4.0.min.js"></script>
+<script>
+
+	function checkLoginDetails1() {
+		var loginSuccess = false;
+		var un = document.getElementById("username").value;
+		var pw = document.getElementById("password").value;
+
+		if( (un == null || un == "")  && (pw == "" || pw == null)) {
+			alert("Please enter user name and password");
+			document.getElementById("username").focus();	
+		} else if( un == null || un == "" ) {
+			alert("Please enter user name");
+			document.getElementById("username").focus();
+		} else if( pw == null || pw == "" ) {
+			alert("Please enter password");
+			document.getElementById("password").focus();
+		} else if( un == "test"  && pw == "test"){
+			loginSuccess = true;
+		} else {
+			alert("Invalid Data, Please try again.");
+			document.getElementById("username").focus();
+		}
+		if(loginSuccess == true) {
+			document.location = "home.html";
+		}
+	}
+		
+	function checkLoginDetails(){
+	
+		var un = document.getElementById("username").value;
+		var pw = document.getElementById("password").value;
+
+		if(un != "" && un != null && pw != "" && pw != null) {
+				var xmlhttp;
+				if (window.XMLHttpRequest) {
+					xmlhttp = new XMLHttpRequest();
+				} else {
+					xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+				}
+				xmlhttp.onreadystatechange = function() {
+					if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+						var showdata = xmlhttp.responseText;
+						var json = jQuery.parseJSON(showdata);
+						var loginStatus = json["LOGINSTATUS"];
+						if(loginStatus == "ADMIN") {
+							window.location = "admin.html";
+						} else if(loginStatus == true){
+							window.location = "home.html";
+						} else {
+						 	alert("Invalid Data, Please try again.");					 	
+						}
+					} // end of if condition
+				}
+				xmlhttp.open("GET", "http://localhost:8080/WebTMonService/login/LoginService/doLogin?userName="+un+"&password="+pw, true); 
+				xmlhttp.send();
+		} else {
+				if( (un == null || un == "")  && (pw == "" || pw == null)) {
+				alert("Please enter user name and password");
+				document.getElementById("username").focus();	
+			} else if( un == null || un == "" ) {
+				alert("Please enter user name");
+				document.getElementById("username").focus();
+			} else if( pw == null || pw == "" ) {
+				alert("Please enter password");
+				document.getElementById("password").focus();
+			}
+		}	
+	}
+</script>
+</head>
+
+<body class="ui-mobile-viewport ui-overlay-a" >
+	<div data-role="page" id="transit_login" >
+		<div data-role="header" data-position="fixed" role="banner" class="ui-header ui-header-fixed" style="border-bottom: 10px solid #286B97; padding:0px;">
+			<h5 style="margin:0px;"><img src="images/logo.png" /></h5>
+		</div>
+		<div class="ui-content" id="mainContent" style="padding:100px 40px;">
+		    <label id="userNameLabel" for="username" >Username :</label>
+			<input type="text" name="username" id="username" value="" placeholder="Enter user name">
+			<label id="pwdLabel" for="password" >Password :</label>
+			<input type="password" name="password" id="password" value="" placeholder="Enter password" autocomplete="off" ><br>
+			<div style="text-align: center;"><a href="javascript:checkLoginDetails()" class="ui-btn ui-corner-all ui-icon-user ui-btn-icon-left ui-btn-inline ui-shadow"> Login</a></div>
+		</div>
+		<div data-role="footer" data-position="fixed" role="banner" class="ui-footer ui-footer-fixed" style="border-top: 10px solid #286B97; padding:10px;">
+			<h5 style="font-size:13px;" >© 2014 CMC Limited, INDIA.</h5>
+		</div>
+	</div>
+	<script>
+		var vWidth = screen.availWidth - 176;
+	</script>
+</body>
+
+</html>

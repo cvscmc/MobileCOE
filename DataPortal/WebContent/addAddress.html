@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Location</title>
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<script>
+	function doSubmit(){
+		
+		var address1 = document.getElementById("address1").value;
+		var address2 = document.getElementById("address2").value;
+		var area = document.getElementById("area").value;
+		var city = document.getElementById("city").value;
+		var state = document.getElementById("state").value;
+		var landMark = document.getElementById("landMark").value;
+		var pincode = document.getElementById("pincode").value;
+		var phone = document.getElementById("phone").value;
+		var mobile1 = document.getElementById("mobile1").value;
+		var mobile2 = document.getElementById("mobile2").value;
+		var latitude = document.getElementById("latitude").value;
+		var longitude = document.getElementById("longitude").value;
+	
+		document.getElementById("successStatus").style.display = "none";
+		document.getElementById("failureStatus").style.display = "none";
+		document.getElementById("defaultStatus").style.display = "none";
+	
+		if(address1 != "" && address1 != null ) {
+				var xmlhttp;
+				if (window.XMLHttpRequest) {
+					xmlhttp = new XMLHttpRequest();
+				} else {
+					xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+				}
+				xmlhttp.onreadystatechange = function() {
+					if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+						var showdata = xmlhttp.responseText;
+						var json = jQuery.parseJSON(showdata);
+						var status = json["STATUS"];
+						 if(status){
+							 document.getElementById("successStatus").style.display = "block";
+							 document.getElementById("failureStatus").style.display = "none";
+							 document.getElementById("defaultStatus").style.display = "none";
+							 document.getElementById("address1").value = "";
+							 document.getElementById("address2").value = "";
+							 document.getElementById("area").value = "";
+							 document.getElementById("city").value = "";
+							 document.getElementById("state").value = "";
+							 document.getElementById("landMark").value = "";
+							 document.getElementById("pincode").value = "";
+							 document.getElementById("phone").value = "";
+							 document.getElementById("mobile1").value = "";
+							 document.getElementById("mobile2").value = "";
+							 document.getElementById("latitude").value = "";
+							 document.getElementById("longitude").value = "";
+	
+						 } else {
+							 document.getElementById("successStatus").style.display = "none";
+							 document.getElementById("failureStatus").style.display = "block";
+							 document.getElementById("defaultStatus").style.display = "none";
+						 }
+					} // end of if condition
+				}
+				var params = "address1="+encodeURIComponent(address1)+"&address2="+encodeURIComponent(address2)
+					+"&area="+encodeURIComponent(area)+"&city="+encodeURIComponent(city)
+					+"&state="+encodeURIComponent(state)+"&landMark="+encodeURIComponent(landMark)
+					+"&pincode="+encodeURIComponent(pincode)+"&phone="+encodeURIComponent(phone)
+					+"&mobile1="+encodeURIComponent(mobile1)+"&mobile2="+encodeURIComponent(mobile2)
+					+"&latitude="+encodeURIComponent(latitude)+"&longitude="+encodeURIComponent(longitude);
+				xmlhttp.open("POST", "http://localhost:8080/WebTMonService/store/AddressService/addAddress", true); 
+				xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+				xmlhttp.send(params);
+		} else {
+			if( (address1 == null || address1 == "")) {
+				document.getElementById("defaultStatus").style.display = "block";
+				document.getElementById("defaultStatus").className = "alert alert-warning";
+				document.getElementById("defaultContent").innerHTML = "<span class='glyphicon glyphicon-hand-right' style='float: left;'></span><strong>Warning!</strong> &nbsp;&nbsp; Please enter address";	
+				document.getElementById("address1").focus();	
+			}
+		}	
+	}
+
+</script>
+</head>
+<body style="background-color: rgb(228, 229, 231); font-size: 19px; color: #123">
+	<div class="panel panel-default" >
+  		<div class="panel-heading">
+    		<span class="glyphicon glyphicon-globe" style="float: right;"></span><h3 class="panel-title">Adding Location</h3>
+  		</div>
+  		<div class="panel-body" style="padding: 30px 40px;">
+			<div class="container" style="padding-bottom: 20px;">        
+		        <div id="AddStore" style="padding-top: 32px; padding-left: 75px">
+			        <div class="input-group" style="width: 50%;">
+			  			<input type="text" class="form-control" id="address1" name="address1" placeholder="Enter Address" style="border-radius: 4px;">
+					</div><br>
+			        <div class="input-group" style="width: 50%;">
+			  			<input type="text" class="form-control" id="address2" name="address2" placeholder="Enter Other Address" style="border-radius: 4px;">
+					</div><br>
+			        <div class="input-group" style="width: 50%;">
+			  			<input type="text" class="form-control" id="area" name="area" placeholder="Enter Area Name" style="border-radius: 4px;">
+					</div><br>
+			        <div class="input-group" style="width: 50%;">
+			  			<input type="text" class="form-control" id="city" name="city" placeholder="Enter City Name" style="border-radius: 4px;">
+					</div><br>
+			        <div class="input-group" style="width: 50%;">
+			  			<input type="text" class="form-control" id="state" name="state" placeholder="Enter State" style="border-radius: 4px;">
+					</div><br>
+			        <div class="input-group" style="width: 50%;">
+			  			<input type="text" class="form-control" id="landMark" name="landMark" placeholder="Enter Land Mark" style="border-radius: 4px;">
+					</div><br>
+			        <div class="input-group" style="width: 50%;">
+			  			<input type="text" class="form-control" id="pincode" name="pincode" placeholder="Enter Pincode" style="border-radius: 4px;">
+					</div><br>
+			        <div class="input-group" style="width: 50%;">
+			  			<input type="text" class="form-control" id="phone" name="phone" placeholder="Enter Phone Number" style="border-radius: 4px;">
+					</div><br>
+			        <div class="input-group" style="width: 50%;">
+			  			<input type="text" class="form-control" id="mobile1" name="mobile1" placeholder="Enter Mobile Number" style="border-radius: 4px;">
+					</div><br>
+			        <div class="input-group" style="width: 50%;">
+			  			<input type="text" class="form-control" id="mobile2" name="mobile2" placeholder="Enter Other Mobile Number" style="border-radius: 4px;">
+					</div><br>
+			        <div class="input-group" style="width: 50%;">
+			  			<input type="text" class="form-control" id="latitude" name="latitude" placeholder="Enter Latitude" style="border-radius: 4px;">
+					</div><br>
+			        <div class="input-group" style="width: 50%;">
+			  			<input type="text" class="form-control" id="longitude" name="longitude" placeholder="Enter Longitude" style="border-radius: 4px;">
+					</div><br>
+					<button type="button" class="btn btn-primary navbar-btn" id="Add" onclick="doSubmit()">Add</button>
+				</div>
+			</div>
+			<div id="defaultStatus" style="display: block; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+      			<div id="defaultContent" style="margin-left: 15px; text-align: center;">&nbsp;</div>
+    		</div>
+			<div id="successStatus" class="alert alert-success" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+      			<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Well done!</strong> &nbsp;&nbsp; You have added location successfully.</div>
+    		</div>
+			<div id="failureStatus" class="alert alert-danger" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+      			<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Oh snap!</strong> &nbsp;&nbsp; Change a few things up and try submitting again.</div>
+    		</div>
+  		</div>
+  	</div>
+</body>
+</html>                                		

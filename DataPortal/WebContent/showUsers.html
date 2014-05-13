@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Show Users</title>
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-password.min.css">
+<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+
+	function addUser() {
+		window.location = "addUser.html";
+	}
+
+	function change(current) {
+		var i = current.id.substring(10);
+		
+		if(document.getElementById('userName'+i).readOnly == true ) {
+			document.getElementById('userName'+i).readOnly = false;
+			document.getElementById('password'+i).readOnly = false;
+			document.getElementById('role'+i).disabled = false;
+			
+			document.getElementById('userName'+i).style.border = "2px inset";
+			document.getElementById('password'+i).style.border = "2px inset";
+			document.getElementById('role'+i).style.border = "1px solid";
+		} else {
+			document.getElementById('userName'+i).readOnly = true;
+			document.getElementById('password'+i).readOnly = true;
+			document.getElementById('role'+i).disabled = true;
+			
+			document.getElementById('userName'+i).style.border = "none";
+			document.getElementById('password'+i).style.border = "none";
+			document.getElementById('role'+i).style.border = "none";
+			
+			var userId = document.getElementById("userId"+i).value;
+			var userName = document.getElementById("userName"+i).value;
+			var password = document.getElementById("password"+i).value;
+			var role = document.getElementById("role"+i).value;
+
+			document.getElementById("successStatus").style.display = "none";
+			document.getElementById("failureStatus").style.display = "none";
+			document.getElementById("defaultStatus").style.display = "none";
+			document.getElementById("deleteStatus").style.display = "none";
+
+			var xmlhttp;
+			if (window.XMLHttpRequest) {
+				xmlhttp = new XMLHttpRequest();
+			} else {
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+		
+			xmlhttp.onreadystatechange = function() {
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+					var showdata = xmlhttp.responseText;
+					var json = jQuery.parseJSON(showdata);
+					var status = json["STATUS"];
+					if(status){
+						document.getElementById("successStatus").style.display = "block";
+						document.getElementById("failureStatus").style.display = "none";
+						document.getElementById("defaultStatus").style.display = "none";
+						document.getElementById("deleteStatus").style.display = "none";
+					} else {
+						document.getElementById("successStatus").style.display = "none";
+						document.getElementById("failureStatus").style.display = "block";
+						document.getElementById("defaultStatus").style.display = "none";
+						document.getElementById("deleteStatus").style.display = "none";
+					}
+				} // end of if condition
+			}
+			var params = "userId="+encodeURIComponent(userId)+"&userName="+encodeURIComponent(userName)
+				+"&password="+encodeURIComponent(password)+"&role="+encodeURIComponent(role);
+
+			xmlhttp.open("POST", "http://localhost:8080/WebTMonService/store/LoginService/updateUser", true); 
+			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xmlhttp.send(params); 	
+		}
+		
+		if(document.getElementById('SpanEditButton'+i).className  == "glyphicon glyphicon-pencil") {
+			document.getElementById('SpanEditButton'+i).className  = "glyphicon glyphicon-saved";
+			document.getElementById('SpanDeleteButton'+i).className  = "glyphicon glyphicon-remove";
+		} else {
+			document.getElementById('SpanEditButton'+i).className  = "glyphicon glyphicon-pencil";
+			document.getElementById('SpanDeleteButton'+i).className  = "glyphicon glyphicon-trash";
+		}
+	}
+
+	function deleteNode(current) {
+		var i = current.id.substring(12);
+		if(document.getElementById('userName'+i).readOnly == true ) {
+			
+			var flag = confirm("do you want to Delete?");
+			if(flag == false) {
+				return;
+			}
+			var userId = document.getElementById("userId"+i).value;
+			document.getElementById("successStatus").style.display = "none";
+			document.getElementById("failureStatus").style.display = "none";
+			document.getElementById("defaultStatus").style.display = "none";
+			document.getElementById("deleteStatus").style.display = "none";
+
+			var xmlhttp;
+			if (window.XMLHttpRequest) {
+				xmlhttp = new XMLHttpRequest();
+			} else {
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+		
+			xmlhttp.onreadystatechange = function() {
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+					var showdata = xmlhttp.responseText;
+					var json = jQuery.parseJSON(showdata);
+					var status = json["STATUS"];
+					if(status){
+						document.getElementById("successStatus").style.display = "none";
+						document.getElementById("failureStatus").style.display = "none";
+						document.getElementById("defaultStatus").style.display = "none";
+						document.getElementById("deleteStatus").style.display = "block";
+					} else {
+						document.getElementById("successStatus").style.display = "none";
+						document.getElementById("failureStatus").style.display = "block";
+						document.getElementById("defaultStatus").style.display = "none";
+						document.getElementById("deleteStatus").style.display = "none";
+					}
+				} // end of if condition
+			}
+			var params = "userId="+encodeURIComponent(userId);
+			xmlhttp.open("POST", "http://localhost:8080/WebTMonService/store/LoginService/deleteUser", true); 
+			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xmlhttp.send(params); 	
+
+			var deleteChild = document.getElementById('delete'+i);
+			var parentNode = document.getElementById('tablebody');
+			parentNode.removeChild(deleteChild);
+				
+		} else {
+			document.getElementById('userName'+i).readOnly = true;
+			document.getElementById('password'+i).readOnly = true;
+			document.getElementById('role'+i).disabled = true;
+			
+			document.getElementById('userName'+i).style.border = "none";
+			document.getElementById('password'+i).style.border = "none";
+			document.getElementById('role'+i).style.border = "none";
+
+			if(document.getElementById('SpanEditButton'+i).className  == "glyphicon glyphicon-pencil") {
+				document.getElementById('SpanEditButton'+i).className  = "glyphicon glyphicon-saved";
+				document.getElementById('SpanDeleteButton'+i).className  = "glyphicon glyphicon-remove";
+			} else {
+				document.getElementById('SpanEditButton'+i).className  = "glyphicon glyphicon-pencil";
+				document.getElementById('SpanDeleteButton'+i).className  = "glyphicon glyphicon-trash";
+			}
+		}
+	}
+	
+	function getUsers(applications) {
+	
+		var xmlhttp;
+		if (window.XMLHttpRequest) {
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+				var showdata = xmlhttp.responseText;
+				var jsonobj = jQuery.parseJSON(showdata);
+				var size = jsonobj.UserDetails.length;
+				
+				for(i=0; i<size; i++) {
+					
+					var main = document.getElementById('tablebody');
+					var trNode = document.createElement("tr");
+					trNode.setAttribute('id', 'delete'+i);
+				
+					var tdNodeName = document.createElement("td");
+					tdNodeName.style.height = "41px"
+					var userId = document.createElement("input");
+					userId.setAttribute('type', 'hidden');
+					userId.setAttribute('id', 'userId'+i);
+					userId.setAttribute('value', jsonobj.UserDetails[i].userId);
+					tdNodeName.appendChild(userId);
+	
+					var tdUserName = document.createElement("td");
+					var userName = document.createElement("input");
+					userName.setAttribute('type', 'text');
+					userName.setAttribute('id', 'userName'+i);
+					userName.setAttribute('readOnly', 'readOnly');
+					userName.setAttribute('value', jsonobj.UserDetails[i].userName);
+					userName.style.border = "none";
+					userName.style.width = "150px";
+					tdUserName.appendChild(userName);
+					
+					var tdPassword = document.createElement("td");
+					var password = document.createElement("input");
+					password.setAttribute('type', 'password');
+					password.setAttribute('id', 'password'+i);
+					password.setAttribute('readOnly', 'readOnly');
+					password.setAttribute('value', jsonobj.UserDetails[i].password);
+					password.style.border = "none";
+					password.style.width = "150px";
+					tdPassword.appendChild(password);
+				
+					var appIdValue = jsonobj.UserDetails[i].role;
+					var tdRoleLabel = document.createElement("td");
+					var role = document.createElement("select");
+					role.setAttribute('id', 'role'+i);
+					role.setAttribute('disabled', 'true');
+					role.style.border = "none";
+					
+					var adminOption = document.createElement("option");
+					adminOption.text = "ADMIN";
+					adminOption.value = "ADMIN";
+					adminOption.selected = true;
+					role.appendChild(adminOption);
+					
+					if(applications != null && applications != "undefined") {
+						var appSize = applications.AppDetails.length;
+						for(k=0; k<appSize; k++) {
+							var optionNodeName = document.createElement("option");
+							optionNodeName.text = applications.AppDetails[k].appName;
+							optionNodeName.value = applications.AppDetails[k].appId;
+							if(appIdValue == applications.AppDetails[k].appId) {
+								optionNodeName.selected = true;
+							}
+							role.appendChild(optionNodeName);
+						}
+					}
+					tdRoleLabel.appendChild(role);
+
+					var tdNodeEditButton = document.createElement("td");
+					var EditButton = document.createElement("button");
+					EditButton.setAttribute('type', 'button');
+					EditButton.setAttribute('id', 'EditButton'+i);
+					EditButton.setAttribute('class', 'btn btn-default btn-xs');
+					tdNodeEditButton.style.verticalAlign = "middle";					
+					EditButton.onclick = function() {change(this);};
+					
+					var SpanEditButton = document.createElement("span");
+					SpanEditButton.setAttribute('id', 'SpanEditButton'+i);
+					SpanEditButton.setAttribute('class', 'glyphicon glyphicon-pencil');
+					EditButton.appendChild(SpanEditButton);
+					tdNodeEditButton.appendChild(EditButton);
+					
+					var tdNodeDeleteButton = document.createElement("td");
+					var DeleteButton = document.createElement("button");
+					DeleteButton.setAttribute('type', 'button');
+					DeleteButton.setAttribute('id', 'DeleteButton'+i);
+					DeleteButton.setAttribute('class', 'btn btn-default btn-xs');
+					tdNodeDeleteButton.style.verticalAlign = "middle";
+					DeleteButton.onclick = function() {deleteNode(this);};
+					
+					var SpanDeleteButton = document.createElement("span");
+					SpanDeleteButton.setAttribute('id', 'SpanDeleteButton'+i);
+					SpanDeleteButton.setAttribute('class', 'glyphicon glyphicon-trash');
+					DeleteButton.appendChild(SpanDeleteButton);
+					tdNodeDeleteButton.appendChild(DeleteButton);
+					
+					trNode.appendChild(tdNodeName);
+					trNode.appendChild(tdUserName);
+					trNode.appendChild(tdPassword);
+					trNode.appendChild(tdRoleLabel);
+					trNode.appendChild(tdNodeEditButton);
+					trNode.appendChild(tdNodeDeleteButton);
+					
+					main.appendChild(trNode);				
+					
+				}  
+			} // end of if condition
+		}
+		xmlhttp.open("GET", "http://localhost:8080/WebTMonService/store/LoginService/getUsers", true); 
+		xmlhttp.send();
+	}
+
+	function getApplications() {
+		
+		var xmlhttp;
+		if (window.XMLHttpRequest) {
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+				var showdata = xmlhttp.responseText;
+				var applications;
+				if(showdata != null && showdata != "") {
+					applications = jQuery.parseJSON(showdata);
+				}
+				getUsers(applications);				
+			} // end of readyState if condition
+		}
+		xmlhttp.open("GET", "http://localhost:8080/WebTMonService/store/StoreService/getApplications", true); 
+		xmlhttp.send();
+	}
+</script>
+
+</head>
+<body style="background-color: rgb(228, 229, 231); height: 100%;">
+	<div class="panel panel-default">
+      	<div class="panel-heading">
+      		<span class="glyphicon glyphicon-plus-sign" data-toggle="tooltip" data-placement="bottom" title="Add User" onclick="addUser()" style="float: right; cursor: pointer;"></span><h3 class="panel-title">Available Users</h3>
+      	</div>
+      	<div class="panel-body" >
+	      	<div style="padding-top: 24px; padding-bottom: 40px;">
+	      		<table class="table" >
+	        		<thead>
+	          			<tr>
+				            <th>#</th>
+				            <th>User Name</th>
+				            <th>Password</th>
+				            <th>Role</th>
+				            <th></th>
+				            <th></th>
+	          			</tr>
+	        		</thead>
+	        		<tbody id="tablebody" style="font-size: 12px;"></tbody>
+	      		</table>
+	    	</div>
+			<div id="defaultStatus" style="display: block; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+	     		<div id="defaultContent" style="margin-left: 15px; text-align: center;">&nbsp;</div>
+	   		</div>
+			<div id="successStatus" class="alert alert-success" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+	     		<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Well done!</strong> &nbsp;&nbsp; You have updated user info successfully.</div>
+	   		</div>
+			<div id="deleteStatus" class="alert alert-success" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+	     		<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Well done!</strong> &nbsp;&nbsp; You have deleted user info successfully.</div>
+	   		</div>
+			<div id="failureStatus" class="alert alert-danger" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+	     		<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Oh snap!</strong> &nbsp;&nbsp; Change a few things up and try submitting again.</div>
+	   		</div>
+   		</div>
+    </div>
+    <script>getApplications();</script>
+</body>
+</html>
+

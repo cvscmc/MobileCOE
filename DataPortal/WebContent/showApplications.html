@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Show Applications</title>
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+
+	function addApplication() {
+		window.location = "addApplication.html";
+	}
+
+	function change(current) {
+		var i = current.id.substring(10);
+		
+		if(document.getElementById('appName'+i).readOnly == true ) {
+			document.getElementById('appName'+i).readOnly = false;
+			document.getElementById('theme'+i).readOnly = false;
+			document.getElementById('headerLabel'+i).readOnly = false;
+			document.getElementById('footerLabel'+i).readOnly = false;
+			document.getElementById('logo'+i).readOnly = false;
+			
+			document.getElementById('appName'+i).style.border = "2px inset";
+			document.getElementById('theme'+i).style.border = "2px inset";
+			document.getElementById('headerLabel'+i).style.border = "2px inset";
+			document.getElementById('footerLabel'+i).style.border = "2px inset";
+			document.getElementById('logo'+i).style.border = "2px inset";
+		} else {
+			document.getElementById('appName'+i).readOnly = true;
+			document.getElementById('theme'+i).readOnly = true;
+			document.getElementById('headerLabel'+i).readOnly = true;
+			document.getElementById('footerLabel'+i).readOnly = true;
+			document.getElementById('logo'+i).readOnly = true;
+			
+			document.getElementById('appName'+i).style.border = "none";
+			document.getElementById('theme'+i).style.border = "none";
+			document.getElementById('headerLabel'+i).style.border = "none";
+			document.getElementById('footerLabel'+i).style.border = "none";
+			document.getElementById('logo'+i).style.border = "none";
+			
+			var appId = document.getElementById("appId"+i).value;
+			var appName = document.getElementById("appName"+i).value;
+			var theme = document.getElementById("theme"+i).value;
+			var headerLabel = document.getElementById("headerLabel"+i).value;
+			var footerLabel = document.getElementById("footerLabel"+i).value;
+			var logo = document.getElementById("logo"+i).value;
+
+			document.getElementById("successStatus").style.display = "none";
+			document.getElementById("failureStatus").style.display = "none";
+			document.getElementById("defaultStatus").style.display = "none";
+			document.getElementById("deleteStatus").style.display = "none";
+
+			var xmlhttp;
+			if (window.XMLHttpRequest) {
+				xmlhttp = new XMLHttpRequest();
+			} else {
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+		
+			xmlhttp.onreadystatechange = function() {
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+					var showdata = xmlhttp.responseText;
+					var json = jQuery.parseJSON(showdata);
+					var status = json["STATUS"];
+					if(status){
+						document.getElementById("successStatus").style.display = "block";
+						document.getElementById("failureStatus").style.display = "none";
+						document.getElementById("defaultStatus").style.display = "none";
+						document.getElementById("deleteStatus").style.display = "none";
+					} else {
+						document.getElementById("successStatus").style.display = "none";
+						document.getElementById("failureStatus").style.display = "block";
+						document.getElementById("defaultStatus").style.display = "none";
+						document.getElementById("deleteStatus").style.display = "none";
+					}
+				} // end of if condition
+			}
+			var params = "appId="+encodeURIComponent(appId)+"&appName="+encodeURIComponent(appName)
+				+"&theme="+encodeURIComponent(theme)+"&headerLabel="+encodeURIComponent(headerLabel)
+				+"&footerLabel="+encodeURIComponent(footerLabel)+"&logo="+encodeURIComponent(logo);
+
+			xmlhttp.open("POST", "http://localhost:8080/WebTMonService/store/StoreService/updateApplication", true); 
+			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xmlhttp.send(params); 	
+		}
+		
+		if(document.getElementById('SpanEditButton'+i).className  == "glyphicon glyphicon-pencil") {
+			document.getElementById('SpanEditButton'+i).className  = "glyphicon glyphicon-saved";
+			document.getElementById('SpanDeleteButton'+i).className  = "glyphicon glyphicon-remove";
+		} else {
+			document.getElementById('SpanEditButton'+i).className  = "glyphicon glyphicon-pencil";
+			document.getElementById('SpanDeleteButton'+i).className  = "glyphicon glyphicon-trash";
+		}
+	}
+
+	function deleteNode(current) {
+		var i = current.id.substring(12);
+		if(document.getElementById('appName'+i).readOnly == true ) {
+			
+			var flag = confirm("do you want to Delete?");
+			if(flag == false) {
+				return;
+			}
+			var appId = document.getElementById("appId"+i).value;
+			document.getElementById("successStatus").style.display = "none";
+			document.getElementById("failureStatus").style.display = "none";
+			document.getElementById("defaultStatus").style.display = "none";
+			document.getElementById("deleteStatus").style.display = "none";
+
+			var xmlhttp;
+			if (window.XMLHttpRequest) {
+				xmlhttp = new XMLHttpRequest();
+			} else {
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+		
+			xmlhttp.onreadystatechange = function() {
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+					var showdata = xmlhttp.responseText;
+					var json = jQuery.parseJSON(showdata);
+					var status = json["STATUS"];
+					if(status){
+						document.getElementById("successStatus").style.display = "none";
+						document.getElementById("failureStatus").style.display = "none";
+						document.getElementById("defaultStatus").style.display = "none";
+						document.getElementById("deleteStatus").style.display = "block";
+					} else {
+						document.getElementById("successStatus").style.display = "none";
+						document.getElementById("failureStatus").style.display = "block";
+						document.getElementById("defaultStatus").style.display = "none";
+						document.getElementById("deleteStatus").style.display = "none";
+					}
+				} // end of if condition
+			}
+			var params = "appId="+encodeURIComponent(appId);
+			xmlhttp.open("POST", "http://localhost:8080/WebTMonService/store/StoreService/deleteApplication", true); 
+			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xmlhttp.send(params); 	
+
+			var deleteChild = document.getElementById('delete'+i);
+			var parentNode = document.getElementById('tablebody');
+			parentNode.removeChild(deleteChild);
+				
+		} else {
+			document.getElementById('appName'+i).readOnly = true;
+			document.getElementById('theme'+i).readOnly = true;
+			document.getElementById('headerLabel'+i).readOnly = true;
+			document.getElementById('footerLabel'+i).readOnly = true;
+			document.getElementById('logo'+i).readOnly = true;
+			
+			document.getElementById('appName'+i).style.border = "none";
+			document.getElementById('theme'+i).style.border = "none";
+			document.getElementById('headerLabel'+i).style.border = "none";
+			document.getElementById('footerLabel'+i).style.border = "none";
+			document.getElementById('logo'+i).style.border = "none";
+
+			if(document.getElementById('SpanEditButton'+i).className  == "glyphicon glyphicon-pencil") {
+				document.getElementById('SpanEditButton'+i).className  = "glyphicon glyphicon-saved";
+				document.getElementById('SpanDeleteButton'+i).className  = "glyphicon glyphicon-remove";
+			} else {
+				document.getElementById('SpanEditButton'+i).className  = "glyphicon glyphicon-pencil";
+				document.getElementById('SpanDeleteButton'+i).className  = "glyphicon glyphicon-trash";
+			}
+		}
+	}
+	
+	function getApplications() {
+	
+		var xmlhttp;
+		if (window.XMLHttpRequest) {
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+				var showdata = xmlhttp.responseText;
+				var jsonobj = jQuery.parseJSON(showdata);
+				var size = jsonobj.AppDetails.length;
+				
+				for(i=0; i<size; i++) {
+					
+					var main = document.getElementById('tablebody');
+					var trNode = document.createElement("tr");
+					trNode.setAttribute('id', 'delete'+i);
+				
+					var tdNodeName = document.createElement("td");
+					tdNodeName.style.height = "41px"
+					var appId = document.createElement("input");
+					appId.setAttribute('type', 'hidden');
+					appId.setAttribute('id', 'appId'+i);
+					appId.setAttribute('value', jsonobj.AppDetails[i].appId);
+					tdNodeName.appendChild(appId);
+	
+					var tdAppName = document.createElement("td");
+					var appName = document.createElement("input");
+					appName.setAttribute('type', 'text');
+					appName.setAttribute('id', 'appName'+i);
+					appName.setAttribute('readOnly', 'readOnly');
+					appName.setAttribute('value', jsonobj.AppDetails[i].appName);
+					appName.style.border = "none";
+					appName.style.width = "100px";
+					tdAppName.appendChild(appName);
+					
+					var tdTheme = document.createElement("td");
+					var theme = document.createElement("input");
+					theme.setAttribute('type', 'text');
+					theme.setAttribute('id', 'theme'+i);
+					theme.setAttribute('readOnly', 'readOnly');
+					theme.setAttribute('value', jsonobj.AppDetails[i].theme);
+					theme.style.border = "none";
+					theme.style.width = "60px";
+					tdTheme.appendChild(theme);
+				
+					var tdHeaderLabel = document.createElement("td");
+					var headerLabel = document.createElement("input");
+					headerLabel.setAttribute('type', 'text');
+					headerLabel.setAttribute('id', 'headerLabel'+i);
+					headerLabel.setAttribute('readOnly', 'readOnly');
+					headerLabel.setAttribute('value', jsonobj.AppDetails[i].headerLabel);
+					headerLabel.style.border = "none";
+					headerLabel.style.width = "150px";
+					tdHeaderLabel.appendChild(headerLabel);
+
+					var tdFooterLabel = document.createElement("td");
+					var footerLabel = document.createElement("input");
+					footerLabel.setAttribute('type', 'text');
+					footerLabel.setAttribute('id', 'footerLabel'+i);
+					footerLabel.setAttribute('readOnly', 'readOnly');
+					footerLabel.setAttribute('value', jsonobj.AppDetails[i].footerLabel);
+					footerLabel.style.border = "none";
+					footerLabel.style.width = "150px";
+					tdFooterLabel.appendChild(footerLabel);
+
+					var tdLogo = document.createElement("td");
+					var logo = document.createElement("input");
+					logo.setAttribute('type', 'text');
+					logo.setAttribute('id', 'logo'+i);
+					logo.setAttribute('readOnly', 'readOnly');
+					logo.setAttribute('value', jsonobj.AppDetails[i].logo);
+					logo.style.border = "none";
+					logo.style.width = "80px";
+					tdLogo.appendChild(logo);
+
+					var tdNodeEditButton = document.createElement("td");
+					var EditButton = document.createElement("button");
+					EditButton.setAttribute('type', 'button');
+					EditButton.setAttribute('id', 'EditButton'+i);
+					EditButton.setAttribute('class', 'btn btn-default btn-xs');
+					tdNodeEditButton.style.verticalAlign = "middle";					
+					EditButton.onclick = function() {change(this);};
+					
+					var SpanEditButton = document.createElement("span");
+					SpanEditButton.setAttribute('id', 'SpanEditButton'+i);
+					SpanEditButton.setAttribute('class', 'glyphicon glyphicon-pencil');
+					EditButton.appendChild(SpanEditButton);
+					tdNodeEditButton.appendChild(EditButton);
+					
+					var tdNodeDeleteButton = document.createElement("td");
+					var DeleteButton = document.createElement("button");
+					DeleteButton.setAttribute('type', 'button');
+					DeleteButton.setAttribute('id', 'DeleteButton'+i);
+					DeleteButton.setAttribute('class', 'btn btn-default btn-xs');
+					tdNodeDeleteButton.style.verticalAlign = "middle";
+					DeleteButton.onclick = function() {deleteNode(this);};
+					
+					var SpanDeleteButton = document.createElement("span");
+					SpanDeleteButton.setAttribute('id', 'SpanDeleteButton'+i);
+					SpanDeleteButton.setAttribute('class', 'glyphicon glyphicon-trash');
+					DeleteButton.appendChild(SpanDeleteButton);
+					tdNodeDeleteButton.appendChild(DeleteButton);
+					
+					trNode.appendChild(tdNodeName);
+					trNode.appendChild(tdAppName);
+					trNode.appendChild(tdTheme);
+					trNode.appendChild(tdHeaderLabel);
+					trNode.appendChild(tdFooterLabel);
+					trNode.appendChild(tdLogo);
+					trNode.appendChild(tdNodeEditButton);
+					trNode.appendChild(tdNodeDeleteButton);
+					
+					main.appendChild(trNode);				
+					
+				}  
+			} // end of if condition
+		}
+		xmlhttp.open("GET", "http://localhost:8080/WebTMonService/store/StoreService/getApplications", true); 
+		xmlhttp.send();
+	}
+
+</script>
+
+</head>
+<body style="background-color: rgb(228, 229, 231); height: 100%;">
+	<div class="panel panel-default" >
+      	<div class="panel-heading" >
+      		<span class="glyphicon glyphicon-plus-sign" data-toggle="tooltip" data-placement="bottom" title="Add Application" onclick="addApplication()" style="float: right; cursor: pointer;"></span><h3 class="panel-title">Available Applications</h3>
+      	</div>
+      	<div class="panel-body" >
+	      	<div style="padding-top: 24px; padding-bottom: 40px;">
+	      		<table class="table" >
+	        		<thead>
+	          			<tr>
+				            <th>#</th>
+				            <th>Name</th>
+				            <th>Theme</th>
+				            <th>Header Label</th>
+				            <th>Footer Label</th>
+				            <th>Logo</th>
+				            <th></th>
+				            <th></th>
+	          			</tr>
+	        		</thead>
+	        		<tbody id="tablebody" style="font-size: 12px;"></tbody>
+	      		</table>
+	    	</div>
+			<div id="defaultStatus" style="display: block; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+	     		<div id="defaultContent" style="margin-left: 15px; text-align: center;">&nbsp;</div>
+	   		</div>
+			<div id="successStatus" class="alert alert-success" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+	     		<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Well done!</strong> &nbsp;&nbsp; You have updated application info successfully.</div>
+	   		</div>
+			<div id="deleteStatus" class="alert alert-success" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+	     		<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Well done!</strong> &nbsp;&nbsp; You have deleted application info successfully.</div>
+	   		</div>
+			<div id="failureStatus" class="alert alert-danger" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+	     		<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Oh snap!</strong> &nbsp;&nbsp; Change a few things up and try submitting again.</div>
+	   		</div>
+	   	</div>
+    </div>
+    <script>getApplications();</script>
+</body>
+</html>
+

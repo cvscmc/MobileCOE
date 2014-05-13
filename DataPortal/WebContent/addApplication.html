@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>User</title>
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<script>
+function doSubmit(){
+	
+	var appName = document.getElementById("appName").value;
+	var theme = document.getElementById("theme").value;
+	var headerLabel = document.getElementById("headerLabel").value;
+	var footerLabel = document.getElementById("footerLabel").value;
+	var logo = document.getElementById("logo").value;
+
+	document.getElementById("successStatus").style.display = "none";
+	document.getElementById("failureStatus").style.display = "none";
+	document.getElementById("defaultStatus").style.display = "none";
+
+ 	if( appName == null || appName == "" ) {
+		document.getElementById("defaultStatus").style.display = "block";
+		document.getElementById("defaultStatus").className = "alert alert-warning";
+		document.getElementById("defaultContent").innerHTML = "<span class='glyphicon glyphicon-hand-right' style='float: left;'></span><strong>Warning!</strong> &nbsp;&nbsp;Please enter application name";	
+		document.getElementById("appName").focus();
+	} else if( theme == null || theme == "" ) {
+		document.getElementById("defaultStatus").style.display = "block";
+		document.getElementById("defaultStatus").className = "alert alert-warning";
+		document.getElementById("defaultContent").innerHTML = "<span class='glyphicon glyphicon-hand-right' style='float: left;'></span><strong>Warning!</strong> &nbsp;&nbsp;Please enter theme name";	
+		document.getElementById("theme").focus();
+	} else if( headerLabel == null || headerLabel == "" ) {
+		document.getElementById("defaultStatus").style.display = "block";
+		document.getElementById("defaultStatus").className = "alert alert-warning";
+		document.getElementById("defaultContent").innerHTML = "<span class='glyphicon glyphicon-hand-right' style='float: left;'></span><strong>Warning!</strong> &nbsp;&nbsp;Please enter header label";	
+		document.getElementById("headerLabel").focus();
+	} else if( footerLabel == null || footerLabel == "" ) {
+		document.getElementById("defaultStatus").style.display = "block";
+		document.getElementById("defaultStatus").className = "alert alert-warning";
+		document.getElementById("defaultContent").innerHTML = "<span class='glyphicon glyphicon-hand-right' style='float: left;'></span><strong>Warning!</strong> &nbsp;&nbsp;Please enter footer label";	
+		document.getElementById("footerLabel").focus();
+	} else if( logo == null || logo == "" ) {
+		document.getElementById("defaultStatus").style.display = "block";
+		document.getElementById("defaultStatus").className = "alert alert-warning";
+		document.getElementById("defaultContent").innerHTML = "<span class='glyphicon glyphicon-hand-right' style='float: left;'></span><strong>Warning!</strong> &nbsp;&nbsp;Please enter logo name";	
+		document.getElementById("logo").focus();			
+	} else {
+		var xmlhttp;
+		if (window.XMLHttpRequest) {
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {			
+				var showdata = xmlhttp.responseText;
+				var json = jQuery.parseJSON(showdata);
+				var status = json["STATUS"];
+				 if(status){
+					 document.getElementById("successStatus").style.display = "block";
+					 document.getElementById("failureStatus").style.display = "none";
+					 document.getElementById("defaultStatus").style.display = "none";
+					 document.getElementById("appName").value = "";
+					 document.getElementById("theme").value = "";
+					 document.getElementById("headerLabel").value = "";
+					 document.getElementById("footerLabel").value = "";
+					 document.getElementById("logo").value = "";
+				 } else {
+					 document.getElementById("successStatus").style.display = "none";
+					 document.getElementById("failureStatus").style.display = "block";
+					 document.getElementById("defaultStatus").style.display = "none";
+				 }
+			} // end of if condition
+		}
+		var params = "appName="+encodeURIComponent(appName)+"&theme="+encodeURIComponent(theme)
+			+"&headerLabel="+encodeURIComponent(headerLabel)+"&footerLabel="+encodeURIComponent(footerLabel)
+			+"&logo="+encodeURIComponent(logo);
+		xmlhttp.open("POST", "http://localhost:8080/WebTMonService/store/StoreService/addApplication", true); 
+		xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		xmlhttp.send(params); 	
+	}
+}
+
+</script>
+</head>
+<body style="background-color: rgb(228, 229, 231); font-size: 19px; color: #123">
+	<div class="panel panel-default">
+  		<div class="panel-heading">
+    		<span class="glyphicon glyphicon-briefcase" style="float: right;"></span><h3 class="panel-title">Adding Application</h3>
+  		</div>
+  		<div class="panel-body" style="padding: 0px 30px 16px;">
+			<div class="container" style="padding-bottom: 23px;">        
+		        <div id="AddUser" style="padding-top: 30px; padding-left: 75px">
+			        <div class="input-group" style="width: 40%;">
+			  			<input type="text" class="form-control" id="appName" name="appName" placeholder="Enter Application Name" style="border-radius: 4px;">
+					</div><br>
+			        <div class="input-group" style="width: 40%;">
+			  			<input type="text" class="form-control" id="theme" name="theme" placeholder="Enter Theme Name" style="border-radius: 4px;">
+					</div><br>
+			        <div class="input-group" style="width: 40%;">
+			  			<input type="text" class="form-control" id="headerLabel" name="headerLabel" placeholder="Enter Header Label" style="border-radius: 4px;">
+					</div><br>
+			        <div class="input-group" style="width: 40%;">
+			  			<input type="text" class="form-control" id="footerLabel" name="footerLabel" placeholder="Enter Footer Label" style="border-radius: 4px;">
+					</div><br>
+			        <div class="input-group" style="width: 40%;">
+			  			<input type="text" class="form-control" id="logo" name="logo" placeholder="Enter Logo Name" style="border-radius: 4px;">
+					</div><br>
+					<button type="button" class="btn btn-primary navbar-btn" id="Add" onclick="doSubmit()">Add</button>
+				</div>
+			</div>
+			<div id="defaultStatus" style="display: block; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+      			<div id="defaultContent" style="margin-left: 15px; text-align: center;">&nbsp;</div>
+    		</div>
+			<div id="successStatus" class="alert alert-success" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+      			<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Well done!</strong> &nbsp;&nbsp; You have added application info successfully.</div>
+    		</div>
+			<div id="failureStatus" class="alert alert-danger" style="display: none; font-size: 14px; padding: 4px; margin-bottom: 0px;">
+      			<div style="margin-left: 15px; text-align: center;"><span class="glyphicon glyphicon-hand-right" style="float: left;"></span><strong>Oh snap!</strong> &nbsp;&nbsp; Change a few things up and try submitting again.</div>
+    		</div>
+  		</div>
+	</div>
+</body>
+</html>                                		
